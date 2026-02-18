@@ -80,6 +80,7 @@ export default function App() {
       return (
         <SenderPage
           data={order.sender}
+          isGetMe={order.isGetMe}
           onChange={updateSender}
           onContinue={() => setStep('recipient')}
         />
@@ -101,6 +102,7 @@ export default function App() {
       return (
         <ItemsPage
           selectedItems={order.items}
+          isGetMe={order.isGetMe}
           onAddItem={addItem}
           onUpdateItems={updateItems}
           onContinue={() => setStep('vendor')}

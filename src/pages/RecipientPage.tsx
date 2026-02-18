@@ -75,7 +75,7 @@ export default function RecipientPage({ data, senderInfo, isGetMe, onChange, onC
           Back
         </button>
 
-        <h3 className="form-section-title">Who's it going to?</h3>
+        <h3 className="form-section-title">{isGetMe ? 'Enter Your Information' : "Who's it going to?"}</h3>
 
         <div className="form-group">
           <label className="form-label">Email</label>

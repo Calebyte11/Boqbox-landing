@@ -4,7 +4,7 @@ import { API_ENDPOINTS } from './config';
 export const giftItems: GiftItem[] = [
   {
     id: '1',
-    name: 'Premium Grocery Basket',
+    name: 'Wine Fruits Republik',
     description: 'Fresh produce, dairy & pantry essentials',
     price: 15000,
     emoji: '🧺',
@@ -55,32 +55,84 @@ export const giftItems: GiftItem[] = [
 export const vendors: Vendor[] = [
   {
     id: 'v1',
-    name: 'FreshMart Lagos',
-    rating: 4.9,
-    deliveryTime: 'Same day',
-    emoji: '🏪',
+    name: 'Wine Fruits Republik',
+    rating: 4.5,
+    deliveryTime: '45 mins',
+    // emoji: '🏪',
+    emoji: '🍷',
   },
   {
     id: 'v2',
-    name: 'QuickCart NG',
-    rating: 4.7,
-    deliveryTime: '1-2 hours',
-    emoji: '⚡',
-  },
-  {
-    id: 'v3',
-    name: 'GreenBasket',
-    rating: 4.8,
-    deliveryTime: 'Next day',
+    name: 'Mama Ik fresh Fruits',
+    rating: 4.6,
+    deliveryTime: '45 mins',
     emoji: '🌿',
   },
   {
-    id: 'v4',
-    name: 'MegaSupply',
+    id: 'v3',
+    name: 'Tamara Food stuffs',
     rating: 4.6,
-    deliveryTime: '2-3 hours',
+    deliveryTime: '45 mins',
+    emoji: '⚡',
+  },
+  {
+    id: 'v4',
+    name: 'Shopwise supermarket',
+    rating: 4.6,
+    deliveryTime: '45 mins',
     emoji: '📦',
   },
+  {
+    id: 'v5',
+    name: 'IBB vegetables',
+    rating: 4.6,
+    deliveryTime: '45 mins',
+    emoji: '🌿',
+  },
+  {
+    id: 'v6',
+    name: 'Pax pharmacy',
+    rating: 4.6,
+    deliveryTime: '45 mins',
+    emoji: '💊',
+  },
+  {
+    id: 'v7',
+    name: 'Mama Ebuka food stuffs',
+    rating: 4.5,
+    deliveryTime: '45 mins',
+    emoji: '🍅',
+  },
+
+  {
+    id: 'v8',
+    name: 'Suya Palace',
+    rating: 4.6,
+    deliveryTime: '45 mins',
+    emoji: '🍖',
+  },
+  {
+    id: 'v9',
+    name: 'Nwanyi Okpa',
+    rating: 4.5,
+    deliveryTime: '45 mins',
+    emoji: '🌿',
+  },
+  {
+    id: 'v10',
+    name: 'Nwanyi Abacha',
+    rating: 4.5,
+    deliveryTime: '45 mins',
+    emoji: '🍜',
+  },
+  {
+    id: 'v11',
+    name: 'Nwanyi Akara',
+    rating: 4.4,
+    deliveryTime: '45 mins',
+    emoji: '🥜',
+  },
+
 ];
 
 export const formatNaira = (amount: number): string => {

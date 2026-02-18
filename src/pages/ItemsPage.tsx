@@ -7,6 +7,7 @@ import { useItems } from '../hooks/useItems';
 
 interface ItemsPageProps {
   selectedItems: OrderItem[];
+  isGetMe?: boolean;
   onAddItem: (item: GiftItem, quantity: number) => void;
   onUpdateItems: (items: OrderItem[]) => void;
   onContinue: () => void;
@@ -15,6 +16,7 @@ interface ItemsPageProps {
 
 export default function ItemsPage({
   selectedItems,
+  isGetMe,
   onAddItem,
   onUpdateItems,
   onContinue,
@@ -65,7 +67,7 @@ export default function ItemsPage({
       <Nav />
       <div className="form-page">
         <div className="form-page-header">
-          <h2 className="form-page-title">Send a Gift</h2>
+          <h2 className="form-page-title">{isGetMe ? 'Get Me' : 'Send a Gift'}</h2>
           <StepIndicator totalSteps={5} currentStep={3} />
         </div>
 
@@ -76,7 +78,7 @@ export default function ItemsPage({
           Back
         </button>
 
-        <h3 className="form-section-title">Pick a gift</h3>
+        <h3 className="form-section-title">{isGetMe ? 'Pick your item' : 'Pick a gift'}</h3>
 
         {apiError && <p className="form-error" style={{ marginBottom: 16 }}>Error loading items: {apiError}</p>}
 

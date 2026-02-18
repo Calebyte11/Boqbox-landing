@@ -5,6 +5,7 @@ import { SenderInfo } from '../types';
 
 interface SenderPageProps {
   data: SenderInfo;
+  isGetMe?: boolean;
   onChange: (data: SenderInfo) => void;
   onContinue: () => void;
 }
@@ -15,7 +16,7 @@ interface Errors {
   phone?: string;
 }
 
-export default function SenderPage({ data, onChange, onContinue }: SenderPageProps) {
+export default function SenderPage({ data, isGetMe, onChange, onContinue }: SenderPageProps) {
   const [errors, setErrors] = useState<Errors>({});
 
   const validate = (): boolean => {
@@ -46,11 +47,11 @@ export default function SenderPage({ data, onChange, onContinue }: SenderPagePro
       <Nav />
       <div className="form-page">
         <div className="form-page-header">
-          <h2 className="form-page-title">Send a Gift</h2>
+          <h2 className="form-page-title">{isGetMe ? 'Get Me' : 'Send a Gift'}</h2>
           <StepIndicator totalSteps={5} currentStep={1} />
         </div>
 
-        <h3 className="form-section-title">Who's the Gift from?</h3>
+        <h3 className="form-section-title">{isGetMe ? 'Enter Your Information' : "Who's the Gift from?"}</h3>
 
         <div className="form-group">
           <label className="form-label">Email</label>
