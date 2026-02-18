@@ -21,6 +21,7 @@ const defaultOrder: GiftOrder = {
 export default function App() {
   const [step, setStep] = useState<Step>('landing');
   const [order, setOrder] = useState<GiftOrder>(defaultOrder);
+  const [paymentReference, setPaymentReference] = useState<string | null>(null);
   const toast = useToast();
 
   // Check for payment callback on app load
@@ -30,8 +31,10 @@ export default function App() {
 
     // If there's a reference parameter, we're returning from Paystack
     if (reference) {
+      console.log('Payment reference detected:', reference);
+      setPaymentReference(reference);
       setStep('payment-callback');
-      // Clean up URL to remove reference parameter
+      // Clean up URL AFTER we've captured the reference
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
@@ -138,14 +141,18 @@ export default function App() {
       return (
         <>
           <PaymentCallbackPage
+            reference={paymentReference}
             onPaymentConfirmed={(success) => {
               if (success) {
                 toast.showSuccess('Payment done successfully');
+                // Clear the reference after successful payment
+                setPaymentReference(null);
                 // Transition to confirmation page after showing success message
                 setTimeout(() => setStep('confirmation'), 2500);
               } else {
                 toast.showError('Payment verification failed. Please try again.');
-                // Go back to payment page to retry
+                // Clear the reference and go back to payment page to retry
+                setPaymentReference(null);
                 setTimeout(() => setStep('payment'), 2500);
               }
             }}

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { GiftItem } from '../types';
 
 interface ItemsResponse {
@@ -85,10 +85,12 @@ export const useItems = (): UseItemsReturn => {
     await fetchItems();
   }, [fetchItems]);
 
-  // Load initial items on first call
-  if (!hasLoaded && !loading) {
-    fetchItems();
-  }
+  // Load initial items on mount only
+  useEffect(() => {
+    if (!hasLoaded && !loading) {
+      fetchItems();
+    }
+  }, []);
 
   return {
     items,

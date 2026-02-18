@@ -3,10 +3,11 @@ import Nav from '../components/Nav';
 import { confirmPayment } from '../lib/data';
 
 interface PaymentCallbackPageProps {
+  reference: string | null;
   onPaymentConfirmed: (success: boolean) => void;
 }
 
-export default function PaymentCallbackPage({ onPaymentConfirmed }: PaymentCallbackPageProps) {
+export default function PaymentCallbackPage({ reference, onPaymentConfirmed }: PaymentCallbackPageProps) {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Verifying payment...');
   const [details, setDetails] = useState('');
@@ -14,11 +15,9 @@ export default function PaymentCallbackPage({ onPaymentConfirmed }: PaymentCallb
   useEffect(() => {
     const verifyPayment = async () => {
       try {
-        // Get reference from URL query parameters
-        const params = new URLSearchParams(window.location.search);
-        const reference = params.get('reference');
-
+        // Use reference from props instead of URL
         if (!reference) {
+          console.warn('No reference provided');
           setStatus('error');
           setMessage('Payment Verification Failed');
           setDetails('No payment reference found. Please try again.');
@@ -61,7 +60,7 @@ export default function PaymentCallbackPage({ onPaymentConfirmed }: PaymentCallb
     };
 
     verifyPayment();
-  }, [onPaymentConfirmed]);
+  }, [reference, onPaymentConfirmed]);
 
   return (
     <div className="app-frame page-enter">
