@@ -9,6 +9,7 @@ interface PaymentCallbackPageProps {
 export default function PaymentCallbackPage({ onPaymentConfirmed }: PaymentCallbackPageProps) {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Verifying payment...');
+  const [details, setDetails] = useState('');
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -19,27 +20,43 @@ export default function PaymentCallbackPage({ onPaymentConfirmed }: PaymentCallb
 
         if (!reference) {
           setStatus('error');
-          setMessage('No payment reference found');
+          setMessage('Payment Verification Failed');
+          setDetails('No payment reference found. Please try again.');
           onPaymentConfirmed(false);
           return;
         }
 
+        console.log('Verifying payment with reference:', reference);
+        
         // Confirm payment with API
         const result = await confirmPayment(reference);
 
+        console.log('Payment confirmation result:', result);
+
         if (result.success) {
           setStatus('success');
-          setMessage('Payment successful! Redirecting...');
-          onPaymentConfirmed(true);
+          setMessage('Payment Successful! ✓');
+          setDetails('Your gift order has been confirmed.');
+          // Call callback after a short delay to ensure state updates
+          setTimeout(() => {
+            onPaymentConfirmed(true);
+          }, 500);
         } else {
           setStatus('error');
-          setMessage(result.message || 'Payment verification failed');
-          onPaymentConfirmed(false);
+          setMessage('Payment Verification Failed');
+          setDetails(result.message || 'Payment verification failed. Please try again.');
+          setTimeout(() => {
+            onPaymentConfirmed(false);
+          }, 500);
         }
       } catch (error) {
+        console.error('Error verifying payment:', error);
         setStatus('error');
-        setMessage('Error verifying payment. Please try again.');
-        onPaymentConfirmed(false);
+        setMessage('Payment Verification Error');
+        setDetails('An error occurred while verifying your payment. Please try again.');
+        setTimeout(() => {
+          onPaymentConfirmed(false);
+        }, 500);
       }
     };
 
@@ -54,20 +71,23 @@ export default function PaymentCallbackPage({ onPaymentConfirmed }: PaymentCallb
           {status === 'loading' && (
             <>
               <div style={{ fontSize: 48 }}>⏳</div>
-              <h2 style={{ textAlign: 'center', fontSize: 20 }}>{message}</h2>
+              <h2 style={{ textAlign: 'center', fontSize: 20, margin: 0 }}>{message}</h2>
+              <p style={{ textAlign: 'center', fontSize: 14, color: '#666', margin: 0 }}>Please wait while we confirm your payment...</p>
               <div style={{ width: 40, height: 40, border: '4px solid #f0f0f0', borderTop: '4px solid #2563eb', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
             </>
           )}
           {status === 'success' && (
             <>
               <div style={{ fontSize: 48 }}>✓</div>
-              <h2 style={{ textAlign: 'center', fontSize: 20, color: '#059669' }}>{message}</h2>
+              <h2 style={{ textAlign: 'center', fontSize: 20, color: '#059669', margin: 0 }}>{message}</h2>
+              <p style={{ textAlign: 'center', fontSize: 14, color: '#666', margin: 0 }}>{details}</p>
             </>
           )}
           {status === 'error' && (
             <>
               <div style={{ fontSize: 48 }}>✕</div>
-              <h2 style={{ textAlign: 'center', fontSize: 20, color: '#dc2626' }}>{message}</h2>
+              <h2 style={{ textAlign: 'center', fontSize: 20, color: '#dc2626', margin: 0 }}>{message}</h2>
+              <p style={{ textAlign: 'center', fontSize: 14, color: '#666', margin: 0 }}>{details}</p>
             </>
           )}
         </div>

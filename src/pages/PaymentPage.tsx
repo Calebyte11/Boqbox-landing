@@ -4,7 +4,7 @@ import StepIndicator from '../components/StepIndicator';
 import LoadingModal from '../components/LoadingModal';
 import { OrderItem, Vendor, SenderInfo, RecipientInfo } from '../types';
 import { formatNaira } from '../lib/data';
-import { API_ENDPOINTS } from '../lib/config';
+import { API_ENDPOINTS, API_CONFIG } from '../lib/config';
 
 interface PaymentPageProps {
   items: OrderItem[];
@@ -34,6 +34,7 @@ interface OrderPayload {
   }>;
   vendor: string;
   totalAmount: number;
+  callback_url?: string;
 }
 
 const DELIVERY_FEE = 1500;
@@ -69,6 +70,7 @@ export default function PaymentPage({
       })),
       vendor: vendor.name,
       totalAmount: total,
+      callback_url: API_CONFIG.CALLBACK_URL,
     };
   };
 

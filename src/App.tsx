@@ -28,13 +28,13 @@ export default function App() {
     const params = new URLSearchParams(window.location.search);
     const reference = params.get('reference');
 
-    // If there's a reference and we're on the payment step, move to callback
-    if (reference && (step === 'payment' || step === 'landing')) {
+    // If there's a reference parameter, we're returning from Paystack
+    if (reference) {
       setStep('payment-callback');
-      // Clean up URL
+      // Clean up URL to remove reference parameter
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, [step]);
+  }, []);
 
   const updateSender = (sender: SenderInfo) => setOrder((o) => ({ ...o, sender }));
   const updateRecipient = (recipient: RecipientInfo) => setOrder((o) => ({ ...o, recipient }));
@@ -141,10 +141,12 @@ export default function App() {
             onPaymentConfirmed={(success) => {
               if (success) {
                 toast.showSuccess('Payment done successfully');
-                setTimeout(() => setStep('confirmation'), 2000);
+                // Transition to confirmation page after showing success message
+                setTimeout(() => setStep('confirmation'), 2500);
               } else {
                 toast.showError('Payment verification failed. Please try again.');
-                setTimeout(() => setStep('payment'), 2000);
+                // Go back to payment page to retry
+                setTimeout(() => setStep('payment'), 2500);
               }
             }}
           />
