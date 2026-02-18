@@ -113,6 +113,7 @@ export default function App() {
     case 'vendor':
       return (
         <VendorPage
+          isGetMe={order.isGetMe}
           selectedVendor={order.vendor}
           onVendorChange={updateVendor}
           onContinue={() => setStep('payment')}
@@ -128,6 +129,7 @@ export default function App() {
       return (
         <>
           <PaymentPage
+            isGetMe={order.isGetMe}
             items={order.items}
             vendor={order.vendor}
             sender={order.sender}

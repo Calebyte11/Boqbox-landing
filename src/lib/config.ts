@@ -3,7 +3,7 @@
  * Reads environment variables and provides centralized API configuration
  */
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:3000';
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://boqbox-mini.onrender.com';
 const ORDER_CREATE_ENDPOINT = process.env.REACT_APP_ORDER_CREATE_ENDPOINT || '/orders/create';
 const PAYMENT_CONFIRM_ENDPOINT = process.env.REACT_APP_PAYMENT_CONFIRM_ENDPOINT || '/confirm-payment';

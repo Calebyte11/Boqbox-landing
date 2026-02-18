@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import Nav from '../components/Nav';
-import StepIndicator from '../components/StepIndicator';
-import LoadingModal from '../components/LoadingModal';
-import { OrderItem, Vendor, SenderInfo, RecipientInfo } from '../types';
-import { formatNaira } from '../lib/data';
-import { API_ENDPOINTS, API_CONFIG } from '../lib/config';
+import React, { useState } from "react";
+import Nav from "../components/Nav";
+import StepIndicator from "../components/StepIndicator";
+import LoadingModal from "../components/LoadingModal";
+import { OrderItem, Vendor, SenderInfo, RecipientInfo } from "../types";
+import { formatNaira } from "../lib/data";
+import { API_ENDPOINTS, API_CONFIG } from "../lib/config";
 
 interface PaymentPageProps {
+  isGetMe?: boolean;
   items: OrderItem[];
   vendor: Vendor;
   sender: SenderInfo;
@@ -26,6 +27,7 @@ interface OrderPayload {
     email_address: string;
     phone_number: string;
     delivery_address: string;
+    message: string;
   };
   items: Array<{
     item: string;
@@ -41,13 +43,22 @@ const DELIVERY_FEE = 1500;
 const SERVICE_FEE = 500;
 
 export default function PaymentPage({
-  items, vendor, sender, recipient, onSubmit, onBack
+  isGetMe,
+  items,
+  vendor,
+  sender,
+  recipient,
+  onSubmit,
+  onBack,
 }: PaymentPageProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loadingMessage, setLoadingMessage] = useState('Creating order...');
+  const [loadingMessage, setLoadingMessage] = useState("Creating order...");
 
-  const subtotal = items.reduce((sum, oi) => sum + oi.item.price * oi.quantity, 0);
+  const subtotal = items.reduce(
+    (sum, oi) => sum + oi.item.price * oi.quantity,
+    0,
+  );
   const total = subtotal + DELIVERY_FEE + SERVICE_FEE;
 
   const constructOrderPayload = (): OrderPayload => {
@@ -62,9 +73,10 @@ export default function PaymentPage({
         email_address: recipient.email,
         phone_number: recipient.phone,
         delivery_address: `${recipient.address}, ${recipient.city}, ${recipient.state}`,
+        message: recipient.message || "",
       },
       items: items.map((oi) => ({
-        item: oi.item._id || oi.item.id || '',
+        item: oi.item._id || oi.item.id || "",
         item_name: oi.item.name,
         quantity: oi.quantity,
       })),
@@ -77,16 +89,16 @@ export default function PaymentPage({
   const handlePlaceOrder = async () => {
     setError(null);
     setIsLoading(true);
-    setLoadingMessage('Creating order...');
+    setLoadingMessage("Creating order...");
 
     try {
       const payload = constructOrderPayload();
-      
+
       // Start the request
       const response = await fetch(API_ENDPOINTS.ORDER_CREATE, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
@@ -99,7 +111,7 @@ export default function PaymentPage({
 
       if (data.success && data.payment_url) {
         // Update loading message before redirect
-        setLoadingMessage('Redirecting to payment...');
+        setLoadingMessage("Redirecting to payment...");
         // Use a small delay to ensure the message displays, then redirect
         // This prevents flickering and ensures smooth UX
         setTimeout(() => {
@@ -107,11 +119,12 @@ export default function PaymentPage({
         }, 300);
       } else {
         setIsLoading(false);
-        setError(data.message || 'Failed to create order');
+        setError(data.message || "Failed to create order");
       }
     } catch (err) {
       setIsLoading(false);
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      const errorMessage =
+        err instanceof Error ? err.message : "An error occurred";
       setError(`Error creating order: ${errorMessage}`);
     }
   };
@@ -119,20 +132,34 @@ export default function PaymentPage({
   return (
     <div className="app-frame page-enter">
       <Nav />
-      <LoadingModal 
-        isOpen={isLoading} 
+      <LoadingModal
+        isOpen={isLoading}
         message={loadingMessage}
-        subMessage={loadingMessage === 'Creating order...' ? 'Please wait...' : 'Almost there...'}
+        subMessage={
+          loadingMessage === "Creating order..."
+            ? "Please wait..."
+            : "Almost there..."
+        }
       />
       <div className="form-page">
         <div className="form-page-header">
-          <h2 className="form-page-title">Send a Gift</h2>
+          <h2 className="form-page-title">
+            {isGetMe ? "Get Me" : "Send a Gift"}
+          </h2>
+
           <StepIndicator totalSteps={5} currentStep={5} />
         </div>
 
         <button className="back-btn" onClick={onBack}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <polyline points="15 18 9 12 15 6"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+          >
+            <polyline points="15 18 9 12 15 6" />
           </svg>
           Back
         </button>
@@ -140,17 +167,19 @@ export default function PaymentPage({
         <h3 className="form-section-title">Order Summary</h3>
 
         {error && (
-          <div style={{ 
-            padding: '12px 14px', 
-            background: '#FEE2E2', 
-            borderRadius: 10, 
-            marginBottom: 16, 
-            fontSize: 13, 
-            color: '#991B1B',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8
-          }}>
+          <div
+            style={{
+              padding: "12px 14px",
+              background: "#FEE2E2",
+              borderRadius: 10,
+              marginBottom: 16,
+              fontSize: 13,
+              color: "#991B1B",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
             <span>⚠️</span> {error}
           </div>
         )}
@@ -158,12 +187,18 @@ export default function PaymentPage({
         <div className="summary-card">
           {items.map((oi) => (
             <div key={oi.item.id} className="summary-row">
-              <span>{oi.item.emoji} {oi.item.name} × {oi.quantity}</span>
-              <span className="value">{formatNaira(oi.item.price * oi.quantity)}</span>
+              <span>
+                {oi.item.emoji} {oi.item.name} × {oi.quantity}
+              </span>
+              <span className="value">
+                {formatNaira(oi.item.price * oi.quantity)}
+              </span>
             </div>
           ))}
           <div className="summary-row">
-            <span>Vendor: {vendor.emoji} {vendor.name}</span>
+            <span>
+              Vendor: {vendor.emoji} {vendor.name}
+            </span>
             <span className="value">{vendor.deliveryTime}</span>
           </div>
           <div className="summary-row">
@@ -180,22 +215,35 @@ export default function PaymentPage({
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: '#F0FFF4', borderRadius: 10, marginBottom: 24, fontSize: 13, color: '#065F46', fontWeight: 500 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "10px 14px",
+            background: "#F0FFF4",
+            borderRadius: 10,
+            marginBottom: 24,
+            fontSize: 13,
+            color: "#065F46",
+            fontWeight: 500,
+          }}
+        >
           <span>🔒</span> Your payment is secured and processed by Paystack
         </div>
 
-        <button 
-          className="continue-btn" 
+        <button
+          className="continue-btn"
           onClick={handlePlaceOrder}
           disabled={isLoading}
-          style={{ 
-            position: 'static', 
+          style={{
+            position: "static",
             opacity: isLoading ? 0.6 : 1,
-            cursor: isLoading ? 'not-allowed' : 'pointer',
-            pointerEvents: isLoading ? 'none' : 'auto'
+            cursor: isLoading ? "not-allowed" : "pointer",
+            pointerEvents: isLoading ? "none" : "auto",
           }}
         >
-          {isLoading ? '⏳ Processing...' : `Pay ${formatNaira(total)}`}
+          {isLoading ? "⏳ Processing..." : `Pay ${formatNaira(total)}`}
         </button>
       </div>
     </div>

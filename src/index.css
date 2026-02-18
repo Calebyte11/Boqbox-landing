@@ -168,8 +168,27 @@ body {
   margin-bottom: 15px;
 }
 
+.landing-cta-get {
+  width: 100%;
+  background: #C8102E;
+  color: #FFFFFF;
+  border: none;
+  padding: 20px 24px;
+  border-radius: var(--radius);
+  font-family: var(--font);
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  letter-spacing: -0.2px;
+  margin-bottom: 15px;
+}
+
 .landing-cta:hover {
   background: var(--orange-dark);
+}
+.landing-cta-get:hover {
+  background: #A00B24;
 }
 
 .landing-cta:active {

@@ -24,7 +24,7 @@ export default function LandingPage({ onStart, onGetMe }: LandingPageProps) {
             <button className="landing-cta" onClick={onStart}>
               Send A gift
             </button>
-            <button className="landing-cta landing-cta-secondary" onClick={onGetMe}>
+            <button className="landing-cta-get landing-cta-secondary" onClick={onGetMe}>
               Get Me
             </button>
           </div>

@@ -64,7 +64,7 @@ export default function RecipientPage({ data, senderInfo, isGetMe, onChange, onC
       <Nav />
       <div className="form-page">
         <div className="form-page-header">
-          <h2 className="form-page-title">{isGetMe ? 'Get A Gift' : 'Send a Gift'}</h2>
+          <h2 className="form-page-title">{isGetMe ? 'Get Me' : 'Send a Gift'}</h2>
           <StepIndicator totalSteps={5} currentStep={2} />
         </div>
 
