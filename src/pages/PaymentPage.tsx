@@ -22,6 +22,7 @@ interface OrderPayload {
     email_address: string;
     phone_number: string;
   };
+  type: "purchase" | "gift";
   recipient: {
     name: string;
     email_address: string;
@@ -68,6 +69,7 @@ export default function PaymentPage({
         email_address: sender.email,
         phone_number: sender.phone,
       },
+      type: isGetMe ? "purchase" : "gift",
       recipient: {
         name: recipient.fullName,
         email_address: recipient.email,

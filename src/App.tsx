@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { Step, GiftOrder, SenderInfo, RecipientInfo, GiftItem, Vendor, OrderItem } from './types';
 import LandingPage from './pages/LandingPage';
@@ -22,6 +23,7 @@ export default function App() {
   const [step, setStep] = useState<Step>('landing');
   const [order, setOrder] = useState<GiftOrder>(defaultOrder);
   const [paymentReference, setPaymentReference] = useState<string | null>(null);
+  const [paymentData, setPaymentData] = useState<any>(null);
   const toast = useToast();
 
   // Check for payment callback on app load
@@ -177,7 +179,7 @@ export default function App() {
     case 'confirmation':
       return (
         <>
-          <ConfirmationPage order={order} onReset={handleReset} />
+          <ConfirmationPage order={order} paymentData={paymentData} onReset={handleReset} />
           {toast.component}
         </>
       );

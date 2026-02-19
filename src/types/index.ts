@@ -29,11 +29,16 @@ export interface GiftItem {
 }
 
 export interface Vendor {
-  id: string;
+  id?: string;
+  _id?: string;
   name: string;
-  rating: number;
-  deliveryTime: string;
-  emoji: string;
+  rating?: number;
+  deliveryTime?: string;
+  emoji?: string;
+  address?: string;
+  type?: string;
+  description?: string;
+  createdAt?: string;
 }
 
 export interface PaymentInfo {
