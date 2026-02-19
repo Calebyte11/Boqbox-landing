@@ -71,11 +71,15 @@ body {
   padding: 20px 24px;
 }
 
+.nav-logo-container {
+  display: flex;
+  align-items: center;
+}
+
 .nav-logo {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--orange);
-  letter-spacing: -0.5px;
+  height: 100px;
+  width: 150px;
+  object-fit: contain;
 }
 
 .nav-location {
@@ -132,7 +136,7 @@ body {
 }
 
 .landing-title .orange {
-  color: var(--orange);
+  color: #FF6B6B;
   display: block;
 }
 
@@ -150,11 +154,24 @@ body {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+  margin-bottom: 1px;
+}
+
+.landing-subtitle-get {
+  font-size: 15px;
+  color: var(--gray-500);
+  line-height: 1.6;
+  margin-bottom: 36px;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 .landing-cta {
   width: 100%;
-  background: var(--orange);
+  background: #FF6B6B;
   color: white;
   border: none;
   padding: 20px 24px;
@@ -350,6 +367,28 @@ body {
     bottom: 24px;
 }
 
+.continue-btn-pay {
+      width: 94%;
+    background: #00C853;
+    color: white;
+    border: none;
+    padding: 15px 16px;
+    border-radius: var(--radius);
+    margin-left: auto;
+    margin-right: auto;
+    font-family: var(--font);
+    font-size: 17px;
+    margin-bottom: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    margin-top: auto;
+    letter-spacing: -0.2px;
+    position: -webkit-sticky;
+    position: sticky;
+    bottom: 24px;
+}
+
 .continue-btn:hover {
   background: var(--orange-dark);
 }
@@ -379,6 +418,7 @@ body {
   padding: 4px 0;
   margin-bottom: 20px;
   transition: color 0.2s;
+  width: fit-content;
 }
 
 .back-btn:hover {

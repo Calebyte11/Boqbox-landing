@@ -28,14 +28,17 @@ export default function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const reference = params.get('reference');
+    const step = params.get('step');
 
-    // If there's a reference parameter, we're returning from Paystack
-    if (reference) {
+    // If there's a reference parameter or step is payment-callback, we're returning from Paystack
+    if (reference || step === 'payment-callback') {
       console.log('Payment reference detected:', reference);
-      setPaymentReference(reference);
+      if (reference) {
+        setPaymentReference(reference);
+      }
       setStep('payment-callback');
-      // Clean up URL AFTER we've captured the reference
-      window.history.replaceState({}, document.title, window.location.pathname);
+      // Don't clean up URL here - let PaymentCallbackPage complete first
+      // URL will be cleaned up after payment confirmation or failure
     }
   }, []);
 
@@ -152,9 +155,15 @@ export default function App() {
                 // Clear the reference after successful payment
                 setPaymentReference(null);
                 // Transition to confirmation page after showing success message
-                setTimeout(() => setStep('confirmation'), 2500);
+                setTimeout(() => {
+                  setStep('confirmation');
+                  // Clean up URL ONLY when transitioning away
+                  window.history.replaceState({}, document.title, window.location.pathname);
+                }, 2500);
               } else {
                 toast.showError('Payment verification failed. Please try again.');
+                // Clean up URL when going back to payment
+                window.history.replaceState({}, document.title, window.location.pathname);
                 // Clear the reference and go back to payment page to retry
                 setPaymentReference(null);
                 setTimeout(() => setStep('payment'), 2500);

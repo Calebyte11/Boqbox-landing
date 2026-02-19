@@ -27,6 +27,7 @@ export default function LandingPage({ onStart, onGetMe }: LandingPageProps) {
             <button className="landing-cta-get landing-cta-secondary" onClick={onGetMe}>
               Get Me
             </button>
+            <p className="landing-subtitle-get">Discreet delivery—plain bag, no labels</p>
           </div>
         </div>
 

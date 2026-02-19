@@ -18,10 +18,10 @@ export default function PaymentCallbackPage({ reference, onPaymentConfirmed }: P
         // Use reference from props instead of URL
         if (!reference) {
           console.warn('No reference provided');
-          setStatus('error');
-          setMessage('Payment Verification Failed');
-          setDetails('No payment reference found. Please try again.');
-          onPaymentConfirmed(false);
+          // setStatus('error');
+          // setMessage('Payment Verification Failed');
+          // setDetails('No payment reference found. Please try again.');
+          // onPaymentConfirmed(false);
           return;
         }
 
@@ -32,7 +32,7 @@ export default function PaymentCallbackPage({ reference, onPaymentConfirmed }: P
 
         console.log('Payment confirmation result:', result);
 
-        if (result.success) {
+        if (result.success === true) {
           setStatus('success');
           setMessage('Payment Successful! ✓');
           setDetails('Your gift order has been confirmed.');
@@ -42,8 +42,8 @@ export default function PaymentCallbackPage({ reference, onPaymentConfirmed }: P
           }, 500);
         } else {
           setStatus('error');
-          setMessage('Payment Verification Failed');
-          setDetails(result.message || 'Payment verification failed. Please try again.');
+          // setMessage('Payment Verification Failed');
+          // setDetails(result.message || 'Payment verification failed. Please try again.');
           setTimeout(() => {
             onPaymentConfirmed(false);
           }, 500);
@@ -51,8 +51,8 @@ export default function PaymentCallbackPage({ reference, onPaymentConfirmed }: P
       } catch (error) {
         console.error('Error verifying payment:', error);
         setStatus('error');
-        setMessage('Payment Verification Error');
-        setDetails('An error occurred while verifying your payment. Please try again.');
+        // setMessage('Payment Verification Error');
+        // setDetails('An error occurred while verifying your payment. Please try again.');
         setTimeout(() => {
           onPaymentConfirmed(false);
         }, 500);

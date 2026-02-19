@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.705420b8.css",
+    "main.js": "/static/js/main.a5a69095.js",
+    "static/media/Helvetica-Neue-Interface-M3.ttf.woff": "/static/media/Helvetica-Neue-Interface-M3.ttf.65c8d53cd118c495af0a.woff",
+    "static/media/preview.png": "/static/media/preview.7bf32b4ffe2ad6be4b80.png",
+    "static/media/BOQBOXLogoTwo.png": "/static/media/BOQBOXLogoTwo.657abe70d2a727ed0560.png",
+    "index.html": "/index.html",
+    "main.705420b8.css.map": "/static/css/main.705420b8.css.map",
+    "main.a5a69095.js.map": "/static/js/main.a5a69095.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.705420b8.css",
+    "static/js/main.a5a69095.js"
+  ]
+}

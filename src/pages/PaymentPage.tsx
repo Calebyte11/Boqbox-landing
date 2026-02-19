@@ -27,20 +27,20 @@ interface OrderPayload {
     email_address: string;
     phone_number: string;
     delivery_address: string;
-    message: string;
   };
   items: Array<{
     item: string;
     item_name: string;
     quantity: number;
   }>;
+  message: string;
   vendor: string;
   totalAmount: number;
   callback_url?: string;
 }
 
-const DELIVERY_FEE = 1500;
-const SERVICE_FEE = 500;
+const DELIVERY_FEE = 0;
+const SERVICE_FEE = 0;
 
 export default function PaymentPage({
   isGetMe,
@@ -73,13 +73,13 @@ export default function PaymentPage({
         email_address: recipient.email,
         phone_number: recipient.phone,
         delivery_address: `${recipient.address}, ${recipient.city}, ${recipient.state}`,
-        message: recipient.message || "",
       },
       items: items.map((oi) => ({
         item: oi.item._id || oi.item.id || "",
         item_name: oi.item.name,
         quantity: oi.quantity,
       })),
+      message: recipient.message || "",
       vendor: vendor.name,
       totalAmount: total,
       callback_url: API_CONFIG.CALLBACK_URL,
@@ -233,7 +233,7 @@ export default function PaymentPage({
         </div>
 
         <button
-          className="continue-btn"
+          className="continue-btn-pay"
           onClick={handlePlaceOrder}
           disabled={isLoading}
           style={{

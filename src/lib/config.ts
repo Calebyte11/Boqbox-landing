@@ -3,11 +3,12 @@
  * Reads environment variables and provides centralized API configuration
  */
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+const BASE_URL = process.env.REACT_APP_BASE_URL || window.location.origin;
+
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://boqbox-mini.onrender.com';
 const ORDER_CREATE_ENDPOINT = process.env.REACT_APP_ORDER_CREATE_ENDPOINT || '/orders/create';
 const PAYMENT_CONFIRM_ENDPOINT = process.env.REACT_APP_PAYMENT_CONFIRM_ENDPOINT || '/confirm-payment';
-const PAYMENT_CALLBACK_URL = `${BASE_URL}/payment-callback`;
+const PAYMENT_CALLBACK_URL = `${BASE_URL}?step=payment-callback`;
 
 export const API_ENDPOINTS = {
   ORDER_CREATE: `${API_BASE_URL}${ORDER_CREATE_ENDPOINT}`,
