@@ -8,6 +8,7 @@ interface PaymentResponse {
   vendor: string;
   recipient: string;
   delivery_address: string;
+  type: 'gift' | 'purchase';
 }
 
 interface ConfirmationPageProps {
@@ -24,9 +25,13 @@ export default function ConfirmationPage({ order, paymentData, onReset }: Confir
       <Nav />
       <div className="confirmation-page">
         <div className="confirm-icon">🎉</div>
-        <h2 className="confirm-title">Gift Sent!</h2>
+        <h2 className="confirm-title">
+          {paymentData.type === 'purchase' ? 'Order Placed!' : 'Gift Sent!'}
+        </h2>
         <p className="confirm-subtitle">
-          Your gift is on its way to {order.recipient.fullName}. They'll love it!
+          {paymentData.type === 'purchase'
+            ? 'pads, condoms... discrete delivery - plain bag, no label'
+            : `Your gift is on its way to ${paymentData.recipient}. They'll love it!`}
         </p>
 
         <div className="confirm-details">
@@ -63,7 +68,7 @@ export default function ConfirmationPage({ order, paymentData, onReset }: Confir
         </div>
 
         <button className="confirm-new-btn" onClick={onReset}>
-          Send Another Gift 🎁
+          {paymentData.type === 'purchase' ? 'Order Another Item 🛒' : 'Send Another Gift 🎁'}
         </button>
       </div>
     </div>
