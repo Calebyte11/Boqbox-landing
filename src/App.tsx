@@ -151,11 +151,13 @@ export default function App() {
         <>
           <PaymentCallbackPage
             reference={paymentReference}
-            onPaymentConfirmed={(success) => {
+            onPaymentConfirmed={(success, data) => {
               if (success) {
                 toast.showSuccess('Payment done successfully');
                 // Clear the reference after successful payment
                 setPaymentReference(null);
+                // Store payment data
+                setPaymentData(data);
                 // Transition to confirmation page after showing success message
                 setTimeout(() => {
                   setStep('confirmation');

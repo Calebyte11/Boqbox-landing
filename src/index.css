@@ -68,7 +68,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
+  padding: 0px 24px;
 }
 
 .nav-logo-container {
@@ -77,7 +77,7 @@ body {
 }
 
 .nav-logo {
-  height: 100px;
+  height: 70px;
   width: 150px;
   object-fit: contain;
 }
@@ -806,4 +806,114 @@ textarea.form-input {
 .form-page::-webkit-scrollbar-thumb {
   background: var(--gray-300);
   border-radius: 2px;
+}
+
+/* ===== MODAL STYLES ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: var(--white);
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--black);
+  margin-bottom: 12px;
+}
+
+.modal-description {
+  font-size: 14px;
+  color: var(--gray-500);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--black);
+  margin-bottom: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.modal-input:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.modal-input::placeholder {
+  color: var(--gray-300);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-btn-cancel {
+  background-color: var(--gray-100);
+  color: var(--gray-700);
+}
+
+.modal-btn-cancel:hover {
+  background-color: var(--gray-300);
+}
+
+.modal-btn-submit {
+  background-color: var(--orange);
+  color: var(--white);
+}
+
+.modal-btn-submit:hover {
+  background-color: var(--orange-dark);
+}
+
+.modal-btn:active {
+  transform: scale(0.98);
 }

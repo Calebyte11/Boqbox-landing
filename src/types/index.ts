@@ -39,6 +39,7 @@ export interface Vendor {
   type?: string;
   description?: string;
   createdAt?: string;
+  isCustom?: boolean;
 }
 
 export interface PaymentInfo {

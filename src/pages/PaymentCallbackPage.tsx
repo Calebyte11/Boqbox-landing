@@ -4,7 +4,7 @@ import { confirmPayment } from '../lib/data';
 
 interface PaymentCallbackPageProps {
   reference: string | null;
-  onPaymentConfirmed: (success: boolean) => void;
+  onPaymentConfirmed: (success: boolean, paymentData?: any) => void;
 }
 
 export default function PaymentCallbackPage({ reference, onPaymentConfirmed }: PaymentCallbackPageProps) {
@@ -38,7 +38,7 @@ export default function PaymentCallbackPage({ reference, onPaymentConfirmed }: P
           setDetails('Your gift order has been confirmed.');
           // Call callback after a short delay to ensure state updates
           setTimeout(() => {
-            onPaymentConfirmed(true);
+            onPaymentConfirmed(true, result.data);
           }, 500);
         } else {
           setStatus('error');

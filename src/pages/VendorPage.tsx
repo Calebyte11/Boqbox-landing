@@ -20,6 +20,8 @@ export default function VendorPage({
   onBack,
 }: VendorPageProps) {
   const [error, setError] = useState("");
+  const [showCustomVendorModal, setShowCustomVendorModal] = useState(false);
+  const [customVendorInput, setCustomVendorInput] = useState("");
   const { vendors, loading, error: apiError, hasMore, loadMore } = useVendors();
 
   const handleContinue = () => {
@@ -29,6 +31,30 @@ export default function VendorPage({
     }
     setError("");
     onContinue();
+  };
+
+  const handleCustomVendorSubmit = () => {
+    if (!customVendorInput.trim()) {
+      setError("Please enter a vendor name");
+      return;
+    }
+
+    // Create a custom vendor object
+    const customVendor: Vendor = {
+      _id: "custom",
+      id: "custom",
+      name: customVendorInput.trim(),
+      emoji: "❓",
+      rating: 0,
+      deliveryTime: "N/A",
+      type: "custom",
+      isCustom: true, // Mark as custom for backend differentiation
+    } as Vendor;
+
+    onVendorChange(customVendor);
+    setError("");
+    setShowCustomVendorModal(false);
+    setCustomVendorInput("");
   };
 
   return (
@@ -99,6 +125,16 @@ export default function VendorPage({
           </button>
         )}
 
+        {!hasMore && !loading && (
+          <button
+            className="continue-btn"
+            onClick={() => setShowCustomVendorModal(true)}
+            style={{ marginBottom: 16, background: '#E5E7EB', color: '#374151' }}
+          >
+            Vendor Not Here?
+          </button>
+        )}
+
         {error && (
           <p className="form-error" style={{ marginBottom: 16 }}>
             {error}
@@ -108,6 +144,58 @@ export default function VendorPage({
         <button className="continue-btn" onClick={handleContinue}>
           Continue
         </button>
+
+        {/* Custom Vendor Modal */}
+        {showCustomVendorModal && (
+          <div className="modal-overlay" onClick={() => setShowCustomVendorModal(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h3 className="modal-title">Enter Vendor Name</h3>
+              <p className="modal-description">Can't find your vendor? Tell us the vendor name.</p>
+              
+              <input
+                type="text"
+                placeholder="Enter vendor name"
+                value={customVendorInput}
+                onChange={(e) => {
+                  setCustomVendorInput(e.target.value);
+                  setError("");
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleCustomVendorSubmit();
+                  }
+                }}
+                className="modal-input"
+                autoFocus
+              />
+
+              {error && (
+                <p className="form-error" style={{ marginBottom: 16, marginTop: 12 }}>
+                  {error}
+                </p>
+              )}
+
+              <div className="modal-actions">
+                <button
+                  className="modal-btn modal-btn-cancel"
+                  onClick={() => {
+                    setShowCustomVendorModal(false);
+                    setCustomVendorInput("");
+                    setError("");
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="modal-btn modal-btn-submit"
+                  onClick={handleCustomVendorSubmit}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

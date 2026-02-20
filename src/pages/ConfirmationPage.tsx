@@ -13,12 +13,31 @@ interface PaymentResponse {
 
 interface ConfirmationPageProps {
   order: GiftOrder;
-  paymentData: PaymentResponse;
+  paymentData?: PaymentResponse;
   onReset: () => void;
 }
 
 export default function ConfirmationPage({ order, paymentData, onReset }: ConfirmationPageProps) {
-  // const total = paymentData.total_amount_paid;
+  // Fallback values if paymentData is not provided
+  const confirmationType = paymentData?.type || 'gift';
+  const totalAmount = paymentData?.total_amount_paid || 0;
+  const vendorName = paymentData?.vendor || 'N/A';
+  const recipientName = paymentData?.recipient || order.recipient.fullName;
+  const deliveryAddress = paymentData?.delivery_address || `${order.recipient.address}, ${order.recipient.city}`;
+
+  // Ensure we have valid rendering data
+  if (!paymentData) {
+    return (
+      <div className="app-frame page-enter">
+        <Nav />
+        <div className="confirmation-page">
+          <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+            <h2>Loading confirmation...</h2>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app-frame page-enter">
@@ -26,12 +45,12 @@ export default function ConfirmationPage({ order, paymentData, onReset }: Confir
       <div className="confirmation-page">
         <div className="confirm-icon">🎉</div>
         <h2 className="confirm-title">
-          {paymentData.type === 'purchase' ? 'Order Placed!' : 'Gift Sent!'}
+          {confirmationType === 'purchase' ? 'Order Placed!' : 'Gift Sent!'}
         </h2>
         <p className="confirm-subtitle">
-          {paymentData.type === 'purchase'
+          {confirmationType === 'purchase'
             ? 'pads, condoms... discrete delivery - plain bag, no label'
-            : `Your gift is on its way to ${paymentData.recipient}. They'll love it!`}
+            : `Your gift is on its way to ${recipientName}. They'll love it!`}
         </p>
 
         <div className="confirm-details">
@@ -46,29 +65,29 @@ export default function ConfirmationPage({ order, paymentData, onReset }: Confir
           <div className="confirm-detail-row">
             <span className="confirm-detail-label">Vendor</span>
             <span className="confirm-detail-value">
-              {paymentData.vendor}
+              {vendorName}
             </span>
           </div>
           <div className="confirm-detail-row">
             <span className="confirm-detail-label">Recipient</span>
-            <span className="confirm-detail-value">{paymentData.recipient}</span>
+            <span className="confirm-detail-value">{recipientName}</span>
           </div>
           <div className="confirm-detail-row">
             <span className="confirm-detail-label">Delivering to</span>
             <span className="confirm-detail-value" style={{ textAlign: 'right', maxWidth: 180 }}>
-              {paymentData.delivery_address}
+              {deliveryAddress}
             </span>
           </div>
           <div className="confirm-detail-row" style={{ paddingTop: 12, borderTop: '1.5px solid #E5E7EB', marginTop: 4 }}>
             <span className="confirm-detail-label">Total Paid</span>
             <span className="confirm-detail-value" style={{ color: '#F97316', fontSize: 18 }}>
-              {formatNaira(paymentData.total_amount_paid)}
+              {formatNaira(totalAmount)}
             </span>
           </div>
         </div>
 
         <button className="confirm-new-btn" onClick={onReset}>
-          {paymentData.type === 'purchase' ? 'Order Another Item 🛒' : 'Send Another Gift 🎁'}
+          {confirmationType === 'purchase' ? 'Order Another Item 🛒' : 'Send Another Gift 🎁'}
         </button>
       </div>
     </div>

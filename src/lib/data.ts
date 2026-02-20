@@ -65,7 +65,7 @@ export const formatNaira = (amount: number): string => {
   }).format(amount);
 };
 
-export const confirmPayment = async (reference: string): Promise<{ success: boolean; message: string }> => {
+export const confirmPayment = async (reference: string): Promise<{ success: boolean; message: string; data?: any }> => {
   try {
     const url = `${API_ENDPOINTS.PAYMENT_CONFIRM}?reference=${encodeURIComponent(reference)}`;
     const response = await fetch(url, {
