@@ -16,7 +16,7 @@ interface UseItemsReturn {
   reset: () => Promise<void>;
 }
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://boqbox-mini.onrender.com/api/v1';
 const LIMIT = 4;
 
 export const useItems = (): UseItemsReturn => {
