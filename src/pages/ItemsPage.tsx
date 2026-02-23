@@ -4,6 +4,9 @@ import StepIndicator from '../components/StepIndicator';
 import { GiftItem, OrderItem } from '../types';
 import { formatNaira } from '../lib/data';
 import { useItems } from '../hooks/useItems';
+import itemsImgOne from '../assets/images/itemsImgOne.jpeg';
+import itemsImgTwo from '../assets/images/itemsImgTwo.jpeg';
+import itemsImgThree from '../assets/images/itemsImgThree.jpeg';
 
 interface ItemsPageProps {
   selectedItems: OrderItem[];
@@ -62,6 +65,11 @@ export default function ItemsPage({
 
   const totalPrice = selectedItems.reduce((sum, oi) => sum + oi.item.price * oi.quantity, 0);
 
+  const getItemImage = (index: number) => {
+    const images = [itemsImgOne, itemsImgTwo, itemsImgThree];
+    return images[index % 3];
+  };
+
   return (
     <div className="app-frame page-enter">
       <Nav />
@@ -83,14 +91,14 @@ export default function ItemsPage({
         {apiError && <p className="form-error" style={{ marginBottom: 16 }}>Error loading items: {apiError}</p>}
 
         <div className="items-grid">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <div
               key={item._id || item.id}
               className={`item-card ${currentItem?._id === item._id || currentItem?.id === item.id ? 'selected' : ''}`}
               onClick={() => { setCurrentItem(item); setError(''); }}
             >
               <span className="item-cat-badge">{item.category}</span>
-              <span className="item-emoji">{item.emoji}</span>
+              <img src={getItemImage(index)} alt={item.name} className="item-emoji" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8 }} />
               <div className="item-name">{item.name}</div>
               <div className="item-desc">{item.description}</div>
               <div className="item-price">{formatNaira(item.price)}</div>
@@ -161,8 +169,9 @@ export default function ItemsPage({
                     }}
                   >
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 500, color: '#1F2937' }}>
-                        {oi.item.emoji} {oi.item.name}
+                      <div style={{ fontSize: 14, fontWeight: 500, color: '#1F2937', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <img src={getItemImage(items.findIndex((item) => (item._id || item.id) === itemId))} alt={oi.item.name} style={{ width: 24, height: 24, objectFit: 'cover', borderRadius: 4 }} />
+                        {oi.item.name}
                       </div>
                       <div style={{ fontSize: 13, color: '#6B7280', marginTop: 4 }}>
                         {formatNaira(oi.item.price)} × {oi.quantity} = <strong>{formatNaira(oi.item.price * oi.quantity)}</strong>

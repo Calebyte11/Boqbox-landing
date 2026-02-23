@@ -2,6 +2,9 @@ import React from 'react';
 import Nav from '../components/Nav';
 import { GiftOrder } from '../types';
 import { formatNaira } from '../lib/data';
+import itemsImgOne from '../assets/images/itemsImgOne.jpeg';
+import itemsImgTwo from '../assets/images/itemsImgTwo.jpeg';
+import itemsImgThree from '../assets/images/itemsImgThree.jpeg';
 
 interface PaymentResponse {
   total_amount_paid: number;
@@ -24,6 +27,11 @@ export default function ConfirmationPage({ order, paymentData, onReset }: Confir
   const vendorName = paymentData?.vendor || 'N/A';
   const recipientName = paymentData?.recipient || order.recipient.fullName;
   const deliveryAddress = paymentData?.delivery_address || `${order.recipient.address}, ${order.recipient.city}`;
+
+  const getItemImage = (index: number) => {
+    const images = [itemsImgOne, itemsImgTwo, itemsImgThree];
+    return images[index % 3];
+  };
 
   // Ensure we have valid rendering data
   if (!paymentData) {
@@ -54,11 +62,12 @@ export default function ConfirmationPage({ order, paymentData, onReset }: Confir
         </p>
 
         <div className="confirm-details">
-          {order.items.map((oi) => (
+          {order.items.map((oi, index) => (
             <div key={oi.item.id} className="confirm-detail-row">
               <span className="confirm-detail-label">Gift</span>
-              <span className="confirm-detail-value">
-                {oi.item.emoji} {oi.item.name} × {oi.quantity}
+              <span className="confirm-detail-value" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <img src={getItemImage(index)} alt={oi.item.name} style={{ width: 24, height: 24, objectFit: 'cover', borderRadius: 4 }} />
+                {oi.item.name} × {oi.quantity}
               </span>
             </div>
           ))}
