@@ -1,3 +1,10 @@
+.landing-title .block-quote-mark {
+  font-size: 1.0em;
+  color: #bbb;
+  font-family: serif;
+  font-weight: 400;
+  display: inline;
+}
 /* ===== FONT IMPORTS ===== */
 @font-face {
   font-family: 'Helvetica Neue Interface';
@@ -126,42 +133,47 @@ body {
 }
 
 .landing-title {
-      font-size: clamp(44px, 12vw, 56px);
+    font-size: clamp(28px, 6vw, 36px);
     font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -1.5px;
-    margin-bottom: 2px;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 0px;
     margin-left: auto;
     margin-right: auto;
+    text-align: center;
+    max-width: 95vw;
+    word-break: break-word;
 }
 
 .landing-title .orange {
-  color: #FF6B6B;
+  color: #F97316;
   display: block;
+  margin-bottom: 0;
 }
 
 .landing-title .black {
   color: var(--black);
   display: block;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .landing-subtitle {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--gray-500);
   line-height: 1.6;
-  margin-bottom: 36px;
-  max-width: 300px;
+  margin-bottom: 0px;
+  max-width: 340px;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  margin-bottom: 1px;
 }
-
 .landing-subtitle-get {
   font-size: 15px;
-  color: var(--gray-500);
-  line-height: 1.6;
-  margin-bottom: 36px;
+  color: var(--black);
+  display: block;
+  margin-top: 0;
+  margin-bottom: 0;
   max-width: 300px;
   margin-left: auto;
   margin-right: auto;
@@ -236,6 +248,72 @@ body {
   height: auto;
   display: block;
   object-fit: contain;
+}
+
+/* ===== WHATSAPP CHAT HEAD ===== */
+.whatsapp-chat-head {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  text-decoration: none;
+  color: inherit;
+  z-index: 1000;
+  transition: transform 0.2s ease;
+}
+.whatsapp-chat-head:hover {
+  transform: scale(1.02);
+}
+.whatsapp-chat-head:active {
+  transform: scale(0.98);
+}
+
+.whatsapp-chat-head__label {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px 10px 16px;
+  background: var(--white);
+  color: var(--gray-700);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 100px 100px 100px 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  margin-right: -8px;
+  white-space: nowrap;
+  max-width: calc(100vw - 120px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border: 1px solid var(--gray-100);
+  transition: box-shadow 0.2s ease, color 0.2s ease;
+}
+.whatsapp-chat-head:hover .whatsapp-chat-head__label {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  color: var(--black);
+}
+
+.whatsapp-chat-head__bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: #25D366;
+  color: var(--white);
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.45);
+  flex-shrink: 0;
+  transition: box-shadow 0.2s ease, background 0.2s ease;
+}
+.whatsapp-chat-head:hover .whatsapp-chat-head__bubble {
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+  background: #20bd5a;
+}
+
+.whatsapp-chat-head__icon {
+  width: 28px;
+  height: 28px;
 }
 
 /* ===== FORM PAGES ===== */

@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.94ba4b1f.css",
-    "main.js": "/static/js/main.4d792d6b.js",
+    "main.css": "/static/css/main.1bc238f2.css",
+    "main.js": "/static/js/main.670c4cdb.js",
     "static/media/Helvetica-Neue-Interface-M3.ttf.woff": "/static/media/Helvetica-Neue-Interface-M3.ttf.65c8d53cd118c495af0a.woff",
     "static/media/preview.png": "/static/media/preview.7bf32b4ffe2ad6be4b80.png",
     "static/media/BOQBOXLogoTwo.png": "/static/media/BOQBOXLogoTwo.657abe70d2a727ed0560.png",
@@ -9,11 +9,11 @@
     "static/media/itemsImgOne.jpeg": "/static/media/itemsImgOne.a4d62844361113f662ab.jpeg",
     "static/media/itemsImgThree.jpeg": "/static/media/itemsImgThree.ab3599948835ad1b816b.jpeg",
     "index.html": "/index.html",
-    "main.94ba4b1f.css.map": "/static/css/main.94ba4b1f.css.map",
-    "main.4d792d6b.js.map": "/static/js/main.4d792d6b.js.map"
+    "main.1bc238f2.css.map": "/static/css/main.1bc238f2.css.map",
+    "main.670c4cdb.js.map": "/static/js/main.670c4cdb.js.map"
   },
   "entrypoints": [
-    "static/css/main.94ba4b1f.css",
-    "static/js/main.4d792d6b.js"
+    "static/css/main.1bc238f2.css",
+    "static/js/main.670c4cdb.js"
   ]
 }
