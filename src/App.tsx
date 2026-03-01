@@ -24,7 +24,17 @@ export default function App() {
   const [order, setOrder] = useState<GiftOrder>(defaultOrder);
   const [paymentReference, setPaymentReference] = useState<string | null>(null);
   const [paymentData, setPaymentData] = useState<any>(null);
+  const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth >= 1024);
   const toast = useToast();
+
+  // Handle window resize for responsive desktop/mobile switching
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Check for payment callback on app load
   useEffect(() => {
@@ -77,116 +87,227 @@ export default function App() {
     setStep('sender');
   };
 
-  switch (step) {
-    case 'landing':
-      return <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} />;
+  // Desktop view with modal overlay
+  const renderDesktopView = () => {
+    const isLanding = step === 'landing';
 
-    case 'sender':
-      return (
-        <SenderPage
-          data={order.sender}
-          isGetMe={order.isGetMe}
-          onChange={updateSender}
-          onContinue={() => setStep('recipient')}
-        />
-      );
+    return (
+      <>
+        {/* Background landing page - always visible on desktop */}
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>
+          <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} />
+        </div>
 
-    case 'recipient':
-      return (
-        <RecipientPage
-          data={order.recipient}
-          senderInfo={order.sender}
-          isGetMe={order.isGetMe}
-          onChange={updateRecipient}
-          onContinue={() => setStep('items')}
-          onBack={() => setStep('sender')}
-        />
-      );
+        {/* Modal overlay for non-landing pages */}
+        {!isLanding && (
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 99 }} />
+        )}
 
-    case 'items':
-      return (
-        <ItemsPage
-          selectedItems={order.items}
-          isGetMe={order.isGetMe}
-          onAddItem={addItem}
-          onUpdateItems={updateItems}
-          onContinue={() => setStep('vendor')}
-          onBack={() => setStep('recipient')}
-        />
-      );
+        {/* Modal pages - only show when not on landing */}
+        {!isLanding && (
+          <div className="app-frame page-enter desktop-modal">
+            {step === 'sender' && (
+              <SenderPage
+                data={order.sender}
+                isGetMe={order.isGetMe}
+                onChange={updateSender}
+                onContinue={() => setStep('recipient')}
+              />
+            )}
 
-    case 'vendor':
-      return (
-        <VendorPage
-          isGetMe={order.isGetMe}
-          selectedVendor={order.vendor}
-          onVendorChange={updateVendor}
-          onContinue={() => setStep('payment')}
-          onBack={() => setStep('items')}
-        />
-      );
+            {step === 'recipient' && (
+              <RecipientPage
+                data={order.recipient}
+                senderInfo={order.sender}
+                isGetMe={order.isGetMe}
+                onChange={updateRecipient}
+                onContinue={() => setStep('items')}
+                onBack={() => setStep('sender')}
+              />
+            )}
 
-    case 'payment':
-      if (order.items.length === 0 || !order.vendor) {
-        setStep('items');
-        return null;
-      }
-      return (
-        <>
-          <PaymentPage
+            {step === 'items' && (
+              <ItemsPage
+                selectedItems={order.items}
+                isGetMe={order.isGetMe}
+                onAddItem={addItem}
+                onUpdateItems={updateItems}
+                onContinue={() => setStep('vendor')}
+                onBack={() => setStep('recipient')}
+              />
+            )}
+
+            {step === 'vendor' && (
+              <VendorPage
+                isGetMe={order.isGetMe}
+                selectedVendor={order.vendor}
+                onVendorChange={updateVendor}
+                onContinue={() => setStep('payment')}
+                onBack={() => setStep('items')}
+              />
+            )}
+
+            {step === 'payment' && (order.items.length > 0 && order.vendor) && (
+              <>
+                <PaymentPage
+                  isGetMe={order.isGetMe}
+                  items={order.items}
+                  vendor={order.vendor}
+                  sender={order.sender}
+                  recipient={order.recipient}
+                  onSubmit={() => setStep('payment-callback')}
+                  onBack={() => setStep('vendor')}
+                />
+                {toast.component}
+              </>
+            )}
+
+            {step === 'payment-callback' && (
+              <>
+                <PaymentCallbackPage
+                  reference={paymentReference}
+                  onPaymentConfirmed={(success, data) => {
+                    if (success) {
+                      toast.showSuccess('Payment done successfully');
+                      setPaymentReference(null);
+                      setPaymentData(data);
+                      setTimeout(() => {
+                        setStep('confirmation');
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                      }, 2500);
+                    } else {
+                      toast.showError('Payment verification failed. Please try again.');
+                      window.history.replaceState({}, document.title, window.location.pathname);
+                      setPaymentReference(null);
+                      setTimeout(() => setStep('payment'), 2500);
+                    }
+                  }}
+                />
+                {toast.component}
+              </>
+            )}
+
+            {step === 'confirmation' && (
+              <>
+                <ConfirmationPage order={order} paymentData={paymentData} onReset={handleReset} />
+                {toast.component}
+              </>
+            )}
+          </div>
+        )}
+      </>
+    );
+  };
+
+  // Mobile view (original behavior)
+  const renderMobileView = () => {
+    switch (step) {
+      case 'landing':
+        return <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} />;
+
+      case 'sender':
+        return (
+          <SenderPage
+            data={order.sender}
             isGetMe={order.isGetMe}
-            items={order.items}
-            vendor={order.vendor}
-            sender={order.sender}
-            recipient={order.recipient}
-            onSubmit={() => setStep('payment-callback')}
-            onBack={() => setStep('vendor')}
+            onChange={updateSender}
+            onContinue={() => setStep('recipient')}
           />
-          {toast.component}
-        </>
-      );
+        );
 
-    case 'payment-callback':
-      return (
-        <>
-          <PaymentCallbackPage
-            reference={paymentReference}
-            onPaymentConfirmed={(success, data) => {
-              if (success) {
-                toast.showSuccess('Payment done successfully');
-                // Clear the reference after successful payment
-                setPaymentReference(null);
-                // Store payment data
-                setPaymentData(data);
-                // Transition to confirmation page after showing success message
-                setTimeout(() => {
-                  setStep('confirmation');
-                  // Clean up URL ONLY when transitioning away
+      case 'recipient':
+        return (
+          <RecipientPage
+            data={order.recipient}
+            senderInfo={order.sender}
+            isGetMe={order.isGetMe}
+            onChange={updateRecipient}
+            onContinue={() => setStep('items')}
+            onBack={() => setStep('sender')}
+          />
+        );
+
+      case 'items':
+        return (
+          <ItemsPage
+            selectedItems={order.items}
+            isGetMe={order.isGetMe}
+            onAddItem={addItem}
+            onUpdateItems={updateItems}
+            onContinue={() => setStep('vendor')}
+            onBack={() => setStep('recipient')}
+          />
+        );
+
+      case 'vendor':
+        return (
+          <VendorPage
+            isGetMe={order.isGetMe}
+            selectedVendor={order.vendor}
+            onVendorChange={updateVendor}
+            onContinue={() => setStep('payment')}
+            onBack={() => setStep('items')}
+          />
+        );
+
+      case 'payment':
+        if (order.items.length === 0 || !order.vendor) {
+          setStep('items');
+          return null;
+        }
+        return (
+          <>
+            <PaymentPage
+              isGetMe={order.isGetMe}
+              items={order.items}
+              vendor={order.vendor}
+              sender={order.sender}
+              recipient={order.recipient}
+              onSubmit={() => setStep('payment-callback')}
+              onBack={() => setStep('vendor')}
+            />
+            {toast.component}
+          </>
+        );
+
+      case 'payment-callback':
+        return (
+          <>
+            <PaymentCallbackPage
+              reference={paymentReference}
+              onPaymentConfirmed={(success, data) => {
+                if (success) {
+                  toast.showSuccess('Payment done successfully');
+                  setPaymentReference(null);
+                  setPaymentData(data);
+                  setTimeout(() => {
+                    setStep('confirmation');
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                  }, 2500);
+                } else {
+                  toast.showError('Payment verification failed. Please try again.');
                   window.history.replaceState({}, document.title, window.location.pathname);
-                }, 2500);
-              } else {
-                toast.showError('Payment verification failed. Please try again.');
-                // Clean up URL when going back to payment
-                window.history.replaceState({}, document.title, window.location.pathname);
-                // Clear the reference and go back to payment page to retry
-                setPaymentReference(null);
-                setTimeout(() => setStep('payment'), 2500);
-              }
-            }}
-          />
-          {toast.component}
-        </>
-      );
+                  setPaymentReference(null);
+                  setTimeout(() => setStep('payment'), 2500);
+                }
+              }}
+            />
+            {toast.component}
+          </>
+        );
 
-    case 'confirmation':
-      return (
-        <>
-          <ConfirmationPage order={order} paymentData={paymentData} onReset={handleReset} />
-          {toast.component}
-        </>
-      );
+      case 'confirmation':
+        return (
+          <>
+            <ConfirmationPage order={order} paymentData={paymentData} onReset={handleReset} />
+            {toast.component}
+          </>
+        );
 
-    default:
-      return <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} />;
-  }
+      default:
+        return <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} />;
+    }
+  };
+
+  return isDesktop ? renderDesktopView() : renderMobileView();
 }
