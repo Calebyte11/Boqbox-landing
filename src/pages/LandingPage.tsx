@@ -32,7 +32,8 @@ export default function LandingPage({ onStart, onGetMe }: LandingPageProps) {
         </div>
 
         <div className="landing-image-wrap">
-          <img src={require('../assets/images/preview.png')} alt="Gift preview" className="landing-preview-image" />
+          <img src={require('../assets/images/preview.png')} alt="Gift preview" className="landing-preview-image mobile-preview" />
+          <img src={require('../assets/images/previewDesktop.png')} alt="Gift preview" className="landing-preview-image desktop-preview" />
         </div>
       </div>
     </div>
