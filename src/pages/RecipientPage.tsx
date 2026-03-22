@@ -66,7 +66,7 @@ export default function RecipientPage({ data, senderInfo, isGetMe, onChange, onC
       <div className="form-page">
         <div className="form-page-header">
           <h2 className="form-page-title">{isGetMe ? 'Get Me' : 'Send a Gift'}</h2>
-          <StepIndicator totalSteps={5} currentStep={2} />
+          <StepIndicator totalSteps={5} currentStep={4} />
         </div>
 
         <button className="back-btn" onClick={onBack}>
