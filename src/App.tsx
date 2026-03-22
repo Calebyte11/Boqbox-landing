@@ -9,6 +9,7 @@ import VendorPage from './pages/VendorPage';
 import PaymentPage from './pages/PaymentPage';
 import PaymentCallbackPage from './pages/PaymentCallbackPage';
 import ConfirmationPage from './pages/ConfirmationPage';
+import HelpButton from './components/HelpButton';
 import { useToast } from './components/Toast';
 
 const defaultOrder: GiftOrder = {
@@ -77,14 +78,19 @@ export default function App() {
     setStep('landing');
   };
 
+  const handleLogoClick = () => {
+    setStep('landing');
+    setOrder(defaultOrder);
+  };
+
   const handleStartSendGift = () => {
     setOrder((o) => ({ ...o, isGetMe: false }));
-    setStep('sender');
+    setStep('items');
   };
 
   const handleStartGetMe = () => {
     setOrder((o) => ({ ...o, isGetMe: true }));
-    setStep('sender');
+    setStep('items');
   };
 
   // Desktop view with modal overlay
@@ -95,7 +101,7 @@ export default function App() {
       <>
         {/* Background landing page - always visible on desktop */}
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>
-          <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} />
+          <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} onLogoClick={handleLogoClick} />
         </div>
 
         {/* Modal overlay for non-landing pages */}
@@ -106,12 +112,34 @@ export default function App() {
         {/* Modal pages - only show when not on landing */}
         {!isLanding && (
           <div className="app-frame page-enter desktop-modal">
+            {step === 'items' && (
+              <ItemsPage
+                selectedItems={order.items}
+                isGetMe={order.isGetMe}
+                onAddItem={addItem}
+                onUpdateItems={updateItems}
+                onContinue={() => setStep('vendor')}
+                onBack={() => setStep('landing')}
+              />
+            )}
+
+            {step === 'vendor' && (
+              <VendorPage
+                isGetMe={order.isGetMe}
+                selectedVendor={order.vendor}
+                onVendorChange={updateVendor}
+                onContinue={() => setStep('sender')}
+                onBack={() => setStep('items')}
+              />
+            )}
+
             {step === 'sender' && (
               <SenderPage
                 data={order.sender}
                 isGetMe={order.isGetMe}
                 onChange={updateSender}
                 onContinue={() => setStep('recipient')}
+                onBack={() => setStep('vendor')}
               />
             )}
 
@@ -121,29 +149,8 @@ export default function App() {
                 senderInfo={order.sender}
                 isGetMe={order.isGetMe}
                 onChange={updateRecipient}
-                onContinue={() => setStep('items')}
-                onBack={() => setStep('sender')}
-              />
-            )}
-
-            {step === 'items' && (
-              <ItemsPage
-                selectedItems={order.items}
-                isGetMe={order.isGetMe}
-                onAddItem={addItem}
-                onUpdateItems={updateItems}
-                onContinue={() => setStep('vendor')}
-                onBack={() => setStep('recipient')}
-              />
-            )}
-
-            {step === 'vendor' && (
-              <VendorPage
-                isGetMe={order.isGetMe}
-                selectedVendor={order.vendor}
-                onVendorChange={updateVendor}
                 onContinue={() => setStep('payment')}
-                onBack={() => setStep('items')}
+                onBack={() => setStep('sender')}
               />
             )}
 
@@ -156,7 +163,7 @@ export default function App() {
                   sender={order.sender}
                   recipient={order.recipient}
                   onSubmit={() => setStep('payment-callback')}
-                  onBack={() => setStep('vendor')}
+                  onBack={() => setStep('recipient')}
                 />
                 {toast.component}
               </>
@@ -203,7 +210,30 @@ export default function App() {
   const renderMobileView = () => {
     switch (step) {
       case 'landing':
-        return <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} />;
+        return <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} onLogoClick={handleLogoClick} />;
+
+      case 'items':
+        return (
+          <ItemsPage
+            selectedItems={order.items}
+            isGetMe={order.isGetMe}
+            onAddItem={addItem}
+            onUpdateItems={updateItems}
+            onContinue={() => setStep('vendor')}
+            onBack={() => setStep('landing')}
+          />
+        );
+
+      case 'vendor':
+        return (
+          <VendorPage
+            isGetMe={order.isGetMe}
+            selectedVendor={order.vendor}
+            onVendorChange={updateVendor}
+            onContinue={() => setStep('sender')}
+            onBack={() => setStep('items')}
+          />
+        );
 
       case 'sender':
         return (
@@ -212,6 +242,7 @@ export default function App() {
             isGetMe={order.isGetMe}
             onChange={updateSender}
             onContinue={() => setStep('recipient')}
+            onBack={() => setStep('vendor')}
           />
         );
 
@@ -222,31 +253,8 @@ export default function App() {
             senderInfo={order.sender}
             isGetMe={order.isGetMe}
             onChange={updateRecipient}
-            onContinue={() => setStep('items')}
-            onBack={() => setStep('sender')}
-          />
-        );
-
-      case 'items':
-        return (
-          <ItemsPage
-            selectedItems={order.items}
-            isGetMe={order.isGetMe}
-            onAddItem={addItem}
-            onUpdateItems={updateItems}
-            onContinue={() => setStep('vendor')}
-            onBack={() => setStep('recipient')}
-          />
-        );
-
-      case 'vendor':
-        return (
-          <VendorPage
-            isGetMe={order.isGetMe}
-            selectedVendor={order.vendor}
-            onVendorChange={updateVendor}
             onContinue={() => setStep('payment')}
-            onBack={() => setStep('items')}
+            onBack={() => setStep('sender')}
           />
         );
 
@@ -264,7 +272,7 @@ export default function App() {
               sender={order.sender}
               recipient={order.recipient}
               onSubmit={() => setStep('payment-callback')}
-              onBack={() => setStep('vendor')}
+              onBack={() => setStep('recipient')}
             />
             {toast.component}
           </>
@@ -305,9 +313,14 @@ export default function App() {
         );
 
       default:
-        return <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} />;
+        return <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} onLogoClick={handleLogoClick} />;
     }
   };
 
-  return isDesktop ? renderDesktopView() : renderMobileView();
+  return (
+    <>
+      {isDesktop ? renderDesktopView() : renderMobileView()}
+      <HelpButton />
+    </>
+  );
 }

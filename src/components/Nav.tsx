@@ -1,10 +1,14 @@
 import React from 'react';
 
-export default function Nav() {
+interface NavProps {
+  onLogoClick?: () => void;
+}
+
+export default function Nav({ onLogoClick }: NavProps) {
 
   return (
     <nav className="nav">
-      <div className='nav-logo-container'>
+      <div className='nav-logo-container' onClick={onLogoClick} style={{ cursor: onLogoClick ? 'pointer' : 'default' }}>
         <img src={require('../assets/images/BOQBOXLogoTwo.png')} alt="BOQBOX" className="nav-logo" />
       </div>
       

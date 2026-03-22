@@ -76,7 +76,7 @@ export default function ItemsPage({
       <div className="form-page">
         <div className="form-page-header">
           <h2 className="form-page-title">{isGetMe ? 'Get Me' : 'Send a Gift'}</h2>
-          <StepIndicator totalSteps={5} currentStep={3} />
+          <StepIndicator totalSteps={5} currentStep={1} />
         </div>
 
         <button className="back-btn" onClick={onBack}>

@@ -66,7 +66,7 @@ export default function VendorPage({
             {isGetMe ? "Get Me" : "Send a Gift"}
           </h2>
 
-          <StepIndicator totalSteps={5} currentStep={4} />
+          <StepIndicator totalSteps={5} currentStep={2} />
         </div>
 
         <button className="back-btn" onClick={onBack}>
