@@ -6,6 +6,7 @@ import { useVendors } from "../hooks/useVendors";
 
 interface VendorPageProps {
   isGetMe?: boolean;
+  isSubscribe?: boolean;
   selectedVendor: Vendor | null;
   onVendorChange: (vendor: Vendor) => void;
   onContinue: () => void;
@@ -14,6 +15,7 @@ interface VendorPageProps {
 
 export default function VendorPage({
   isGetMe,
+  isSubscribe,
   selectedVendor,
   onVendorChange,
   onContinue,
@@ -63,7 +65,7 @@ export default function VendorPage({
       <div className="form-page">
         <div className="form-page-header">
           <h2 className="form-page-title">
-            {isGetMe ? "Get Me" : "Send a Gift"}
+            {isSubscribe ? 'Subscribe' : isGetMe ? 'Get Me' : 'Send a Gift'}
           </h2>
 
           <StepIndicator totalSteps={5} currentStep={2} />

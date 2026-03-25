@@ -6,6 +6,7 @@ import { SenderInfo } from '../types';
 interface SenderPageProps {
   data: SenderInfo;
   isGetMe?: boolean;
+  isSubscribe?: boolean;
   onChange: (data: SenderInfo) => void;
   onContinue: () => void;
   onBack?: () => void;
@@ -17,7 +18,7 @@ interface Errors {
   phone?: string;
 }
 
-export default function SenderPage({ data, isGetMe, onChange, onContinue, onBack }: SenderPageProps) {
+export default function SenderPage({ data, isGetMe, isSubscribe, onChange, onContinue, onBack }: SenderPageProps) {
   const [errors, setErrors] = useState<Errors>({});
 
   const validate = (): boolean => {
@@ -48,7 +49,7 @@ export default function SenderPage({ data, isGetMe, onChange, onContinue, onBack
       <Nav />
       <div className="form-page">
         <div className="form-page-header">
-          <h2 className="form-page-title">{isGetMe ? 'Get Me' : 'Send a Gift'}</h2>
+          <h2 className="form-page-title">{isSubscribe ? 'Subscribe' : isGetMe ? 'Get Me' : 'Send a Gift'}</h2>
           <StepIndicator totalSteps={5} currentStep={3} />
         </div>
 
@@ -59,7 +60,7 @@ export default function SenderPage({ data, isGetMe, onChange, onContinue, onBack
           Back
         </button>
 
-        <h3 className="form-section-title">{isGetMe ? 'Enter Your Information' : "Who's the Gift from?"}</h3>
+        <h3 className="form-section-title">{isSubscribe ? 'Enter Your Information' : isGetMe ? 'Enter Your Information' : "Who's the Gift from?"}</h3>
 
         <div className="form-group">
           <label className="form-label">Email</label>

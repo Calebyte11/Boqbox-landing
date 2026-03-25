@@ -4,10 +4,11 @@ import Nav from '../components/Nav';
 interface LandingPageProps {
   onStart: () => void;
   onGetMe: () => void;
+  onSubscribe: () => void;
   onLogoClick?: () => void;
 }
 
-export default function LandingPage({ onStart, onGetMe, onLogoClick }: LandingPageProps) {
+export default function LandingPage({ onStart, onGetMe, onSubscribe, onLogoClick }: LandingPageProps) {
   return (
     <div className="app-frame page-enter">
       <Nav onLogoClick={onLogoClick} />
@@ -21,6 +22,9 @@ export default function LandingPage({ onStart, onGetMe, onLogoClick }: LandingPa
           <div className="landing-cta-container">
             <button className="landing-cta-get landing-cta-secondary" onClick={onGetMe}>
               Get Me
+            </button>
+            <button className="landing-cta-get landing-cta-secondary" onClick={onSubscribe}>
+              Subscribe
             </button>
             <button className="landing-cta" onClick={onStart}>
               Send A gift

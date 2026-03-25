@@ -8,6 +8,7 @@ interface RecipientPageProps {
   data: RecipientInfo;
   senderInfo: SenderInfo;
   isGetMe?: boolean;
+  isSubscribe?: boolean;
   onChange: (data: RecipientInfo) => void;
   onContinue: () => void;
   onBack: () => void;
@@ -22,7 +23,7 @@ interface Errors {
   state?: string;
 }
 
-export default function RecipientPage({ data, senderInfo, isGetMe, onChange, onContinue, onBack }: RecipientPageProps) {
+export default function RecipientPage({ data, senderInfo, isGetMe, isSubscribe, onChange, onContinue, onBack }: RecipientPageProps) {
   const [errors, setErrors] = useState<Errors>({});
 
   useEffect(() => {
@@ -65,7 +66,7 @@ export default function RecipientPage({ data, senderInfo, isGetMe, onChange, onC
       <Nav />
       <div className="form-page">
         <div className="form-page-header">
-          <h2 className="form-page-title">{isGetMe ? 'Get Me' : 'Send a Gift'}</h2>
+          <h2 className="form-page-title">{isSubscribe ? 'Subscribe' : isGetMe ? 'Get Me' : 'Send a Gift'}</h2>
           <StepIndicator totalSteps={5} currentStep={4} />
         </div>
 
