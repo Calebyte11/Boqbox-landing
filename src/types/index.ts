@@ -1,4 +1,4 @@
-export type Step = 'landing' | 'sender' | 'recipient' | 'items' | 'vendor' | 'payment' | 'payment-callback' | 'confirmation';
+export type Step = 'landing' | 'sender' | 'recipient' | 'items' | 'vendor' | 'payment' | 'payment-callback' | 'confirmation' | 'subscribe';
 
 export interface SenderInfo {
   email: string;
@@ -16,16 +16,25 @@ export interface RecipientInfo {
   message?: string;
 }
 
+export interface SubscriptionOption {
+  name: string; // 'weekly', 'monthly', etc.
+  price: number;
+  quantity: string; // e.g., '1 Crate', '4 Crates'
+  _id?: string;
+}
+
 export interface GiftItem {
   id?: string;
   _id?: string;
   name: string;
   description: string;
-  price: number;
+  price?: number;
   emoji?: string;
   category: string;
   image_url?: string;
   createdAt?: string;
+  type?: string; // 'subscription' or regular
+  options?: SubscriptionOption[];
 }
 
 export interface Vendor {
@@ -52,6 +61,7 @@ export interface PaymentInfo {
 export interface OrderItem {
   item: GiftItem;
   quantity: number;
+  subscriptionOption?: SubscriptionOption; // For subscription items
 }
 
 export interface GiftOrder {
@@ -60,4 +70,7 @@ export interface GiftOrder {
   items: OrderItem[];
   vendor: Vendor | null;
   isGetMe?: boolean;
+  isSubscribe?: boolean;
+  subscriptionDuration?: number;
+  subscriptionSchedule?: string;
 }

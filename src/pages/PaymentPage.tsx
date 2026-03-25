@@ -8,6 +8,7 @@ import { API_ENDPOINTS, API_CONFIG } from "../lib/config";
 
 interface PaymentPageProps {
   isGetMe?: boolean;
+  isSubscribe?: boolean;
   items: OrderItem[];
   vendor: Vendor;
   sender: SenderInfo;
@@ -40,11 +41,37 @@ interface OrderPayload {
   callback_url?: string;
 }
 
+interface SubscriptionPayload {
+  type: "self" | "gift";
+  frequency: string; // e.g., "weekly", "monthly"
+  subscribedBy: {
+    name: string;
+    email_address: string;
+    phone_number: string;
+  };
+  subscribedFor: {
+    name: string;
+    email_address: string;
+    phone_number: string;
+    delivery_address: string;
+  };
+  items: Array<{
+    item: string;
+    item_name: string;
+    quantity: number;
+  }>;
+  message: string;
+  vendor: string;
+  totalAmount: number;
+  callback_url?: string;
+}
+
 const DELIVERY_FEE = 0;
 const SERVICE_FEE = 0;
 
 export default function PaymentPage({
   isGetMe,
+  isSubscribe,
   items,
   vendor,
   sender,
@@ -56,13 +83,56 @@ export default function PaymentPage({
   const [error, setError] = useState<string | null>(null);
   const [loadingMessage, setLoadingMessage] = useState("Creating order...");
 
-  const subtotal = items.reduce(
-    (sum, oi) => sum + oi.item.price * oi.quantity,
-    0,
-  );
+  // Detect if this is a subscription order
+  const hasSubscriptionItems = items.some((oi) => oi.subscriptionOption);
+  const isSubscriptionFlow = isSubscribe || hasSubscriptionItems;
+
+  const subtotal = items.reduce((sum, oi) => {
+    if (oi.subscriptionOption) {
+      return sum + oi.subscriptionOption.price * oi.quantity;
+    }
+    return sum + (oi.item.price ?? 0) * oi.quantity;
+  }, 0);
   const total = subtotal + DELIVERY_FEE + SERVICE_FEE;
 
-  const constructOrderPayload = (): OrderPayload => {
+  // Get the subscription frequency from the first subscription item
+  const getSubscriptionFrequency = (): string => {
+    const subscriptionItem = items.find((oi) => oi.subscriptionOption);
+    return subscriptionItem?.subscriptionOption?.name || "weekly";
+  };
+
+  const constructOrderPayload = (): OrderPayload | SubscriptionPayload => {
+    if (isSubscriptionFlow) {
+      // Build subscription payload
+      return {
+        type: isGetMe ? "gift" : "self",
+        frequency: getSubscriptionFrequency(),
+        subscribedBy: {
+          name: sender.fullName,
+          email_address: sender.email,
+          phone_number: sender.phone,
+        },
+        subscribedFor: {
+          name: isGetMe ? recipient.fullName : sender.fullName,
+          email_address: isGetMe ? recipient.email : sender.email,
+          phone_number: isGetMe ? recipient.phone : sender.phone,
+          delivery_address: isGetMe
+            ? `${recipient.address}, ${recipient.city}, ${recipient.state}`
+            : `${recipient.address}, ${recipient.city}, ${recipient.state}`,
+        },
+        items: items.map((oi) => ({
+          item: oi.item._id || oi.item.id || "",
+          item_name: oi.item.name,
+          quantity: oi.quantity,
+        })),
+        message: recipient.message || "",
+        vendor: vendor.name,
+        totalAmount: total,
+        callback_url: API_CONFIG.CALLBACK_URL,
+      } as SubscriptionPayload;
+    }
+
+    // Build regular order payload
     return {
       sender: {
         name: sender.fullName,
@@ -80,12 +150,19 @@ export default function PaymentPage({
         item: oi.item._id || oi.item.id || "",
         item_name: oi.item.name,
         quantity: oi.quantity,
+        subscriptionOption: oi.subscriptionOption
+          ? {
+              name: oi.subscriptionOption.name,
+              price: oi.subscriptionOption.price,
+              quantity: oi.subscriptionOption.quantity,
+            }
+          : undefined,
       })),
       message: recipient.message || "",
       vendor: vendor.name,
       totalAmount: total,
       callback_url: API_CONFIG.CALLBACK_URL,
-    };
+    } as OrderPayload;
   };
 
   const handlePlaceOrder = async () => {
@@ -96,8 +173,13 @@ export default function PaymentPage({
     try {
       const payload = constructOrderPayload();
 
+      // Select the appropriate API endpoint
+      const apiEndpoint = isSubscriptionFlow
+        ? "https://boqbox-mini.onrender.com/api/v1/subscriptions/create"
+        : API_ENDPOINTS.ORDER_CREATE;
+
       // Start the request
-      const response = await fetch(API_ENDPOINTS.ORDER_CREATE, {
+      const response = await fetch(apiEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -146,7 +228,11 @@ export default function PaymentPage({
       <div className="form-page">
         <div className="form-page-header">
           <h2 className="form-page-title">
-            {isGetMe ? "Get Me" : "Send a Gift"}
+            {isSubscriptionFlow
+              ? "Subscribe"
+              : isGetMe
+                ? "Get Me"
+                : "Send a Gift"}
           </h2>
 
           <StepIndicator totalSteps={5} currentStep={5} />
@@ -189,12 +275,25 @@ export default function PaymentPage({
         <div className="summary-card">
           {items.map((oi) => (
             <div key={oi.item.id} className="summary-row">
-              <span>
-                {oi.item.emoji} {oi.item.name} × {oi.quantity}
-              </span>
-              <span className="value">
-                {formatNaira(oi.item.price * oi.quantity)}
-              </span>
+              {oi.subscriptionOption ? (
+                <>
+                  <span>
+                    {oi.item.emoji} {oi.item.name} - <strong style={{ textTransform: 'capitalize' }}>{oi.subscriptionOption.name}</strong> ({oi.subscriptionOption.quantity})
+                  </span>
+                  <span className="value">
+                    {formatNaira(oi.subscriptionOption.price * oi.quantity)}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span>
+                    {oi.item.emoji} {oi.item.name} × {oi.quantity}
+                  </span>
+                  <span className="value">
+                    {formatNaira((oi.item.price ?? 0) * oi.quantity)}
+                  </span>
+                </>
+              )}
             </div>
           ))}
           <div className="summary-row">

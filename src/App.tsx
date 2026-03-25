@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import { Step, GiftOrder, SenderInfo, RecipientInfo, GiftItem, Vendor, OrderItem } from './types';
+import { Step, GiftOrder, SenderInfo, RecipientInfo, GiftItem, Vendor, OrderItem, SubscriptionOption } from './types';
 import LandingPage from './pages/LandingPage';
 import SenderPage from './pages/SenderPage';
 import RecipientPage from './pages/RecipientPage';
@@ -59,7 +59,7 @@ export default function App() {
   const updateRecipient = (recipient: RecipientInfo) => setOrder((o) => ({ ...o, recipient }));
   
   const updateItems = (items: OrderItem[]) => setOrder((o) => ({ ...o, items }));
-  const addItem = (item: GiftItem, quantity: number) => {
+  const addItem = (item: GiftItem, quantity: number, subscriptionOption?: SubscriptionOption) => {
     setOrder((o) => {
       const existingIndex = o.items.findIndex((oi) => oi.item.id === item.id);
       if (existingIndex >= 0) {
@@ -67,7 +67,7 @@ export default function App() {
         newItems[existingIndex].quantity += quantity;
         return { ...o, items: newItems };
       }
-      return { ...o, items: [...o.items, { item, quantity }] };
+      return { ...o, items: [...o.items, { item, quantity, subscriptionOption }] };
     });
   };
   
@@ -93,6 +93,11 @@ export default function App() {
     setStep('items');
   };
 
+  const handleStartSubscribe = () => {
+    setOrder((o) => ({ ...o, isGetMe: false, isSubscribe: true }));
+    setStep('subscribe');
+  };
+
   // Desktop view with modal overlay
   const renderDesktopView = () => {
     const isLanding = step === 'landing';
@@ -101,7 +106,7 @@ export default function App() {
       <>
         {/* Background landing page - always visible on desktop */}
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>
-          <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} onLogoClick={handleLogoClick} />
+          <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} onSubscribe={handleStartSubscribe} onLogoClick={handleLogoClick} />
         </div>
 
         {/* Modal overlay for non-landing pages */}
@@ -123,6 +128,17 @@ export default function App() {
               />
             )}
 
+            {step === 'subscribe' && (
+              <ItemsPage
+                selectedItems={order.items}
+                isSubscribe={true}
+                onAddItem={addItem}
+                onUpdateItems={updateItems}
+                onContinue={() => setStep('vendor')}
+                onBack={() => setStep('landing')}
+              />
+            )}
+
             {step === 'vendor' && (
               <VendorPage
                 isGetMe={order.isGetMe}
@@ -137,6 +153,7 @@ export default function App() {
               <SenderPage
                 data={order.sender}
                 isGetMe={order.isGetMe}
+                isSubscribe={order.isSubscribe}
                 onChange={updateSender}
                 onContinue={() => setStep('recipient')}
                 onBack={() => setStep('vendor')}
@@ -148,6 +165,7 @@ export default function App() {
                 data={order.recipient}
                 senderInfo={order.sender}
                 isGetMe={order.isGetMe}
+                isSubscribe={order.isSubscribe}
                 onChange={updateRecipient}
                 onContinue={() => setStep('payment')}
                 onBack={() => setStep('sender')}
@@ -158,6 +176,7 @@ export default function App() {
               <>
                 <PaymentPage
                   isGetMe={order.isGetMe}
+                  isSubscribe={order.isSubscribe}
                   items={order.items}
                   vendor={order.vendor}
                   sender={order.sender}
@@ -210,13 +229,25 @@ export default function App() {
   const renderMobileView = () => {
     switch (step) {
       case 'landing':
-        return <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} onLogoClick={handleLogoClick} />;
+        return <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} onSubscribe={handleStartSubscribe} onLogoClick={handleLogoClick} />;
 
       case 'items':
         return (
           <ItemsPage
             selectedItems={order.items}
             isGetMe={order.isGetMe}
+            onAddItem={addItem}
+            onUpdateItems={updateItems}
+            onContinue={() => setStep('vendor')}
+            onBack={() => setStep('landing')}
+          />
+        );
+
+      case 'subscribe':
+        return (
+          <ItemsPage
+            selectedItems={order.items}
+            isSubscribe={true}
             onAddItem={addItem}
             onUpdateItems={updateItems}
             onContinue={() => setStep('vendor')}
@@ -240,6 +271,7 @@ export default function App() {
           <SenderPage
             data={order.sender}
             isGetMe={order.isGetMe}
+            isSubscribe={order.isSubscribe}
             onChange={updateSender}
             onContinue={() => setStep('recipient')}
             onBack={() => setStep('vendor')}
@@ -252,6 +284,7 @@ export default function App() {
             data={order.recipient}
             senderInfo={order.sender}
             isGetMe={order.isGetMe}
+            isSubscribe={order.isSubscribe}
             onChange={updateRecipient}
             onContinue={() => setStep('payment')}
             onBack={() => setStep('sender')}
@@ -267,6 +300,7 @@ export default function App() {
           <>
             <PaymentPage
               isGetMe={order.isGetMe}
+              isSubscribe={order.isSubscribe}
               items={order.items}
               vendor={order.vendor}
               sender={order.sender}
@@ -313,7 +347,7 @@ export default function App() {
         );
 
       default:
-        return <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} onLogoClick={handleLogoClick} />;
+        return <LandingPage onStart={handleStartSendGift} onGetMe={handleStartGetMe} onSubscribe={handleStartSubscribe} onLogoClick={handleLogoClick} />;
     }
   };
 
