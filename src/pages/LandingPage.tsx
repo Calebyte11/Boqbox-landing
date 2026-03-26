@@ -1,6 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import Nav from '../components/Nav';
+import useSEO from '../hooks/useSEO';
 
 interface LandingPageProps {
   onStart: () => void;
@@ -10,6 +11,16 @@ interface LandingPageProps {
 }
 
 export default function LandingPage({ onStart, onGetMe, onSubscribe, onLogoClick }: LandingPageProps) {
+  useSEO({
+    title: 'BOQBOX - Quick Discreet Delivery Lagos',
+    description: 'Send discreet gifts with BOQBOX. Pads, condoms, and more delivered in plain bags with no labels. Fast, easy, and confidential.',
+    keywords: 'discreet gifts, anonymous delivery, gift delivery, pads, condoms, intimate gifts, secure delivery, Lagos',
+    ogTitle: 'BOQBOX - Quick Discreet Delivery Lagos',
+    ogDescription: 'Get quality gifts delivered discreetly to your loved ones with BOQBOX.',
+    ogType: 'website',
+    twitterCard: 'summary_large_image',
+    canonicalUrl: 'https://boqbox.ng',
+  });
   return (
     <div className="app-frame page-enter">
       <Nav onLogoClick={onLogoClick} />

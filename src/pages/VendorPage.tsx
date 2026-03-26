@@ -3,6 +3,7 @@ import Nav from "../components/Nav";
 import StepIndicator from "../components/StepIndicator";
 import { Vendor } from "../types";
 import { useVendors } from "../hooks/useVendors";
+import useSEO from "../hooks/useSEO";
 
 interface VendorPageProps {
   isGetMe?: boolean;
@@ -25,6 +26,13 @@ export default function VendorPage({
   const [showCustomVendorModal, setShowCustomVendorModal] = useState(false);
   const [customVendorInput, setCustomVendorInput] = useState("");
   const { vendors, loading, error: apiError, hasMore, loadMore } = useVendors();
+
+  // Set SEO metadata for vendor page
+  useSEO({
+    title: 'Choose Delivery Partner - BOQBOX',
+    description: 'Select your preferred delivery partner for discreet and secure gift delivery.',
+    keywords: 'delivery partners, delivery options, vendor selection, fast delivery, Lagos',
+  });
 
   const handleContinue = () => {
     if (!selectedVendor) {

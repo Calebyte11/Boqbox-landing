@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Nav from '../components/Nav';
 import StepIndicator from '../components/StepIndicator';
 import { RecipientInfo, SenderInfo } from '../types';
+import useSEO from '../hooks/useSEO';
 
 interface RecipientPageProps {
   data: RecipientInfo;
@@ -25,6 +26,13 @@ interface Errors {
 
 export default function RecipientPage({ data, senderInfo, isGetMe, isSubscribe, onChange, onContinue, onBack }: RecipientPageProps) {
   const [errors, setErrors] = useState<Errors>({});
+
+  // Set SEO metadata for recipient page
+  useSEO({
+    title: 'Recipient Address - BOQBOX',
+    description: 'Enter the recipient\'s details for secure and discreet delivery.',
+    keywords: 'delivery address, recipient information, shipping details, Lagos',
+  });
 
   useEffect(() => {
     if (isGetMe) {

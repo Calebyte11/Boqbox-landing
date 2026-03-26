@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Nav from '../components/Nav';
 import StepIndicator from '../components/StepIndicator';
 import { SenderInfo } from '../types';
+import useSEO from '../hooks/useSEO';
 
 interface SenderPageProps {
   data: SenderInfo;
@@ -20,6 +21,13 @@ interface Errors {
 
 export default function SenderPage({ data, isGetMe, isSubscribe, onChange, onContinue, onBack }: SenderPageProps) {
   const [errors, setErrors] = useState<Errors>({});
+
+  // Set SEO metadata for sender page
+  useSEO({
+    title: 'Sender Information - BOQBOX',
+    description: 'Enter your information so the recipient knows who the gift is from.',
+    keywords: 'sender details, contact information, gift sender, Lagos',
+  });
 
   const validate = (): boolean => {
     const newErrors: Errors = {};

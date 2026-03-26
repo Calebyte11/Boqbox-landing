@@ -5,6 +5,7 @@ import { GiftItem, OrderItem, SubscriptionOption } from '../types';
 import { formatNaira } from '../lib/data';
 import { useItems } from '../hooks/useItems';
 import { useSubscribableItems } from '../hooks/useSubscribableItems';
+import useSEO from '../hooks/useSEO';
 import itemsImgOne from '../assets/images/itemsImgOne.jpeg';
 import itemsImgTwo from '../assets/images/itemsImgTwo.jpeg';
 import itemsImgThree from '../assets/images/itemsImgThree.jpeg';
@@ -36,6 +37,21 @@ export default function ItemsPage({
   const regularItems = useItems();
   const subscribableItems = useSubscribableItems();
   const { items, loading, error: apiError, hasMore, loadMore } = isSubscribe ? subscribableItems : regularItems;
+
+  // Set SEO metadata for items page
+  useSEO({
+    title: isSubscribe 
+      ? 'Subscribe to Gifts - BOQBOX' 
+      : isGetMe 
+      ? 'Create Your Wishlist - BOQBOX' 
+      : 'Select Discreet Gifts - BOQBOX',
+    description: isSubscribe
+      ? 'Subscribe to regular deliveries of your favorite items. Flexible durations and easy management.'
+      : isGetMe
+      ? 'Create a personal wishlist for gifts you\'d like to receive.'
+      : 'Browse and select from our collection of quality gifts for discreet delivery.',
+    keywords: 'select gifts, gift shopping, discreet delivery, gift subscriptions, wishlist, Lagos',
+  });
 
   // Helper function to check if an item can be added to current flow
   const canAddItem = (item: GiftItem): boolean => {

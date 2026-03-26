@@ -5,6 +5,7 @@ import LoadingModal from "../components/LoadingModal";
 import { OrderItem, Vendor, SenderInfo, RecipientInfo } from "../types";
 import { formatNaira } from "../lib/data";
 import { API_ENDPOINTS, API_CONFIG } from "../lib/config";
+import useSEO from "../hooks/useSEO";
 
 interface PaymentPageProps {
   isGetMe?: boolean;
@@ -82,6 +83,13 @@ export default function PaymentPage({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingMessage, setLoadingMessage] = useState("Creating order...");
+
+  // Set SEO metadata for payment page
+  useSEO({
+    title: 'Secure Payment - BOQBOX',
+    description: 'Complete your gift order with our secure payment gateway.',
+    keywords: 'payment, checkout, secure payment, order confirmation, Lagos',
+  });
 
   // Detect if this is a subscription order
   const hasSubscriptionItems = items.some((oi) => oi.subscriptionOption);
