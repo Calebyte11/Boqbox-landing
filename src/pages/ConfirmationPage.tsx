@@ -2,6 +2,7 @@ import React from 'react';
 import Nav from '../components/Nav';
 import { GiftOrder } from '../types';
 import { formatNaira } from '../lib/data';
+import useSEO from '../hooks/useSEO';
 import itemsImgOne from '../assets/images/itemsImgOne.jpeg';
 import itemsImgTwo from '../assets/images/itemsImgTwo.jpeg';
 import itemsImgThree from '../assets/images/itemsImgThree.jpeg';
@@ -22,6 +23,13 @@ interface ConfirmationPageProps {
 }
 
 export default function ConfirmationPage({ order, paymentData, onReset }: ConfirmationPageProps) {
+  // Set SEO metadata for confirmation page
+  useSEO({
+    title: 'Order Confirmed - BOQBOX',
+    description: 'Your gift order has been confirmed and will be delivered soon.',
+    keywords: 'order confirmation, delivery confirmation, order status, Lagos',
+  });
+
   // Fallback values if paymentData is not provided
   const confirmationType = paymentData?.type || 'gift';
   const isSubscription = confirmationType === 'self' || order.isSubscribe;
