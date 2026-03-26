@@ -607,6 +607,9 @@ body {
   font-weight: 700;
   color: var(--black);
   margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .item-desc {
@@ -614,6 +617,11 @@ body {
   color: var(--gray-500);
   line-height: 1.5;
   margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .item-price {
