@@ -18,6 +18,7 @@ const defaultOrder: GiftOrder = {
   items: [],
   vendor: null,
   isGetMe: false,
+  isSubscribe: false,
 };
 
 export default function App() {
@@ -74,27 +75,27 @@ export default function App() {
   const updateVendor = (vendor: Vendor) => setOrder((o) => ({ ...o, vendor }));
 
   const handleReset = () => {
-    setOrder(defaultOrder);
+    setOrder({ ...defaultOrder, isSubscribe: false, isGetMe: false });
     setStep('landing');
   };
 
   const handleLogoClick = () => {
     setStep('landing');
-    setOrder(defaultOrder);
+    setOrder({ ...defaultOrder, isSubscribe: false, isGetMe: false });
   };
 
   const handleStartSendGift = () => {
-    setOrder((o) => ({ ...o, isGetMe: false }));
+    setOrder((o) => ({ ...o, isGetMe: false, isSubscribe: false, items: [], vendor: null }));
     setStep('items');
   };
 
   const handleStartGetMe = () => {
-    setOrder((o) => ({ ...o, isGetMe: true }));
+    setOrder((o) => ({ ...o, isGetMe: true, isSubscribe: false, items: [], vendor: null }));
     setStep('items');
   };
 
   const handleStartSubscribe = () => {
-    setOrder((o) => ({ ...o, isGetMe: false, isSubscribe: true }));
+    setOrder((o) => ({ ...o, isGetMe: false, isSubscribe: true, items: [], vendor: null }));
     setStep('subscribe');
   };
 
@@ -142,10 +143,11 @@ export default function App() {
             {step === 'vendor' && (
               <VendorPage
                 isGetMe={order.isGetMe}
+                isSubscribe={order.isSubscribe}
                 selectedVendor={order.vendor}
                 onVendorChange={updateVendor}
                 onContinue={() => setStep('sender')}
-                onBack={() => setStep('items')}
+                onBack={() => setStep(order.isSubscribe ? 'subscribe' : 'items')}
               />
             )}
 
@@ -259,10 +261,11 @@ export default function App() {
         return (
           <VendorPage
             isGetMe={order.isGetMe}
+            isSubscribe={order.isSubscribe}
             selectedVendor={order.vendor}
             onVendorChange={updateVendor}
             onContinue={() => setStep('sender')}
-            onBack={() => setStep('items')}
+            onBack={() => setStep(order.isSubscribe ? 'subscribe' : 'items')}
           />
         );
 

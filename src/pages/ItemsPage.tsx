@@ -37,11 +37,29 @@ export default function ItemsPage({
   const subscribableItems = useSubscribableItems();
   const { items, loading, error: apiError, hasMore, loadMore } = isSubscribe ? subscribableItems : regularItems;
 
+  // Helper function to check if an item can be added to current flow
+  const canAddItem = (item: GiftItem): boolean => {
+    if (isSubscribe) {
+      // In subscription flow, only allow items with options
+      return !!(item.options && item.options.length > 0);
+    } else {
+      // In regular flow, don't allow items with options
+      return !(item.options && item.options.length > 0);
+    }
+  };
+
   const handleAddItem = () => {
     if (!currentItem) {
       setError('Please select a gift item to add');
       return;
     }
+
+    // Validate item type matches current flow
+    if (!canAddItem(currentItem)) {
+      setError(isSubscribe ? 'Please select a subscription item' : 'Please select a regular gift item');
+      return;
+    }
+
     if (isSubscribe) {
       if (!showDurationSelector) {
         setShowDurationSelector(true);
@@ -73,9 +91,25 @@ export default function ItemsPage({
     onUpdateItems(newItems);
   };
 
+  // Effect to clear mismatched items and current selection when flow changes
+  React.useEffect(() => {
+    // Clear current item if it doesn't match the flow
+    if (currentItem && !canAddItem(currentItem)) {
+      setCurrentItem(null);
+      setShowDurationSelector(false);
+      setSelectedOption(null);
+    }
+
+    // Remove any selected items that don't match the current flow
+    const filteredItems = selectedItems.filter((oi) => canAddItem(oi.item));
+    if (filteredItems.length !== selectedItems.length) {
+      onUpdateItems(filteredItems);
+    }
+  }, [isSubscribe, selectedItems]);
+
   const handleContinue = () => {
     if (selectedItems.length === 0) {
-      setError('Please add at least one gift item to continue');
+      setError(isSubscribe ? 'Please add at least one subscription item to continue' : 'Please add at least one gift item to continue');
       return;
     }
     setError('');
@@ -146,7 +180,18 @@ export default function ItemsPage({
                   
                   {/* Content */}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 16, fontWeight: 600, color: '#1F2937', marginBottom: 8 }}>{item.name}</div>
+                    <div style={{ 
+                      fontSize: 16, 
+                      fontWeight: 600, 
+                      color: '#1F2937', 
+                      marginBottom: 8,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      maxWidth: '100%',
+                    }}>
+                      {item.name}
+                    </div>
                     
                     {/* Options/Schedule Buttons with Prices */}
                     {item.options && item.options.length > 0 && (
@@ -322,8 +367,10 @@ export default function ItemsPage({
                   </div>
                 </div>
 
-                <div style={{ background: '#FFF7ED', borderRadius: 12, padding: '12px 16px', marginBottom: 20, fontSize: 14, color: '#92400E', fontWeight: 500 }}>
-                  {currentQuantity}× {currentItem.name} · <strong>{formatNaira((currentItem.price || 0) * currentQuantity)}</strong>
+                <div style={{ background: '#FFF7ED', borderRadius: 12, padding: '12px 16px', marginBottom: 20, fontSize: 14, color: '#92400E', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                  <span style={{ whiteSpace: 'nowrap' }}>{currentQuantity}×</span>
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>{currentItem.name}</span>
+                  <span style={{ whiteSpace: 'nowrap' }}>· <strong>{formatNaira((currentItem.price || 0) * currentQuantity)}</strong></span>
                 </div>
 
                 <button className="continue-btn" onClick={handleAddItem} style={{ marginBottom: 16 }}>
@@ -355,9 +402,11 @@ export default function ItemsPage({
                     }}
                   >
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 500, color: '#1F2937', display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <img src={getItemImage(oi.item, itemIndex)} alt={oi.item.name} style={{ width: 24, height: 24, objectFit: 'cover', borderRadius: 4 }} />
-                        {oi.item.name}
+                      <div style={{ fontSize: 14, fontWeight: 500, color: '#1F2937', display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                        <img src={getItemImage(oi.item, itemIndex)} alt={oi.item.name} style={{ width: 24, height: 24, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {oi.item.name}
+                        </span>
                       </div>
                       {oi.subscriptionOption ? (
                         <div style={{ fontSize: 13, color: '#6B7280', marginTop: 4 }}>
