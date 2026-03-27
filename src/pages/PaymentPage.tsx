@@ -287,6 +287,7 @@ export default function PaymentPage({
                 <>
                   <span>
                     {oi.item.emoji} {oi.item.name} - <strong style={{ textTransform: 'capitalize' }}>{oi.subscriptionOption.name}</strong> ({oi.subscriptionOption.quantity})
+                    {oi.dropOffDay && <span style={{ fontSize: 12, opacity: 0.8 }}> • 📅 {oi.dropOffDay}</span>}
                   </span>
                   <span className="value">
                     {formatNaira(oi.subscriptionOption.price * oi.quantity)}

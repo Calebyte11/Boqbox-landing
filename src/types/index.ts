@@ -62,6 +62,7 @@ export interface OrderItem {
   item: GiftItem;
   quantity: number;
   subscriptionOption?: SubscriptionOption; // For subscription items
+  dropOffDay?: string; // Day of week for subscription (e.g., 'Monday', 'Tuesday')
 }
 
 export interface GiftOrder {
