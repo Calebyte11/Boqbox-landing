@@ -60,15 +60,21 @@ export default function App() {
   const updateRecipient = (recipient: RecipientInfo) => setOrder((o) => ({ ...o, recipient }));
   
   const updateItems = (items: OrderItem[]) => setOrder((o) => ({ ...o, items }));
-  const addItem = (item: GiftItem, quantity: number, subscriptionOption?: SubscriptionOption) => {
+  const addItem = (item: GiftItem, quantity: number, subscriptionOption?: SubscriptionOption, dropOffDay?: string) => {
     setOrder((o) => {
       const existingIndex = o.items.findIndex((oi) => oi.item.id === item.id);
       if (existingIndex >= 0) {
         const newItems = [...o.items];
         newItems[existingIndex].quantity += quantity;
+        if (subscriptionOption) {
+          newItems[existingIndex].subscriptionOption = subscriptionOption;
+        }
+        if (dropOffDay) {
+          newItems[existingIndex].dropOffDay = dropOffDay;
+        }
         return { ...o, items: newItems };
       }
-      return { ...o, items: [...o.items, { item, quantity, subscriptionOption }] };
+      return { ...o, items: [...o.items, { item, quantity, subscriptionOption, dropOffDay }] };
     });
   };
   

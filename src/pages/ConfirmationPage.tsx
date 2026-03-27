@@ -116,6 +116,14 @@ export default function ConfirmationPage({ order, paymentData, onReset }: Confir
                 </span>
               </div>
               <div className="confirm-detail-row">
+                <span className="confirm-detail-label">Drop-Off Day</span>
+                <span className="confirm-detail-value">
+                  {order.items[0]?.dropOffDay ? (
+                    <>📅 {order.items[0].dropOffDay}</>
+                  ) : 'TBD'}
+                </span>
+              </div>
+              <div className="confirm-detail-row">
                 <span className="confirm-detail-label">Per Delivery</span>
                 <span className="confirm-detail-value">
                   {formatNaira(getSubscriptionPrice())}
