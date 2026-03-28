@@ -31,7 +31,17 @@ export default function ConfirmationPage({ order, paymentData, onReset }: Confir
   });
 
   // Fallback values if paymentData is not provided
-  const confirmationType = paymentData?.type || 'gift';
+  // Use order.isGetMe to determine type if not explicitly set in paymentData
+  let confirmationType = paymentData?.type;
+  if (!confirmationType) {
+    if (order.isSubscribe) {
+      confirmationType = 'self';
+    } else if (order.isGetMe) {
+      confirmationType = 'purchase';
+    } else {
+      confirmationType = 'gift';
+    }
+  }
   const isSubscription = confirmationType === 'self' || order.isSubscribe;
   const totalAmount = paymentData?.total_amount_paid || 0;
   const vendorName = paymentData?.vendor || 'N/A';

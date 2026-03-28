@@ -6,10 +6,10 @@
 const BASE_URL = process.env.REACT_APP_BASE_URL || window.location.origin;
 
 // =========== FOR DEVELOPMENT =============
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://boqbox-mini.onrender.com/api/v1';
+// const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://boqbox-mini.onrender.com/api/v1';
 
 // =============== FOR PRODUCTION =================
-// const API_BASE_URL = 'https://boqbox.ng/api/v1';
+const API_BASE_URL = 'https://boqbox.ng/api/v1';
 
 const ORDER_CREATE_ENDPOINT = '/orders/create';
 const PAYMENT_CONFIRM_ENDPOINT = '/confirm-payment';
