@@ -1,5 +1,4 @@
 import React from 'react';
-import { createPortal } from 'react-dom';
 import Nav from '../components/Nav';
 import useSEO from '../hooks/useSEO';
 
