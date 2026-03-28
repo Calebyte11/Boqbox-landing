@@ -211,13 +211,13 @@ body {
 .landing-title .orange {
   color: #FF6B6B;
   display: block;
-  font-size: 80px;
+  font-size: 40px;
 }
 
 .landing-title .black {
   color: var(--black);
   display: block;
-  font-size: 80px;
+  font-size: 40px;
 }
 
   .landing-image-wrap {
@@ -271,16 +271,20 @@ body {
 }
 
 .landing-title .orange {
-  color: #F97316;
+  color: #f97316;
   display: block;
-  margin-bottom: 0;
+  font-size: 30px;
+  margin-bottom: 12px;
+  text-align: center;
+  margin-top: 15px;
 }
 
 .landing-title .black {
   color: var(--black);
-  display: block;
-  margin-top: 0;
-  margin-bottom: 0;
+    display: block;
+    font-size: 30px;
+    margin-bottom: 12px;
+    text-align: center;
 }
 
 .landing-subtitle {
@@ -308,7 +312,7 @@ body {
 
 .landing-cta {
   width: 100%;
-  background: var(--orange);
+  background: #FF6200;
   color: white;
   border: none;
   padding: 20px 24px;
@@ -324,7 +328,7 @@ body {
 
 .landing-cta-get {
   width: 100%;
-  background: #C8102E;
+  background: #FF6200;
   color: #FFFFFF;
   border: none;
   padding: 20px 24px;
@@ -339,7 +343,7 @@ body {
 }
 
 .landing-cta:hover {
-  background: var(--orange-dark);
+  background: #A00B24;
 }
 .landing-cta-get:hover {
   background: #A00B24;

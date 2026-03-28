@@ -27,24 +27,24 @@ export default function LandingPage({ onStart, onGetMe, onSubscribe, onLogoClick
       <div className="landing-page">
         <div className="landing-hero">
           <h1 className="landing-title">
-            <span className="orange">Send love,</span>
-            <span className="black">not links.</span>
+            <span className="orange">Quick Quiet Drops. No Drama,</span>
+            <span className="black">Choose how you want to start your Quiet Life.</span>
           </h1>
-          <p className="landing-subtitle">Pads, condoms... discrete delivery - plain bag, no label</p>
+          {/* <p className="landing-subtitle">Pads, condoms... discrete delivery - plain bag, no label</p> */}
           <div className="landing-cta-container">
             <button className="landing-cta-get landing-cta-secondary" onClick={onGetMe}>
-              Get Me
+              Get Me → One-time fast delivery
             </button>
             <button className="landing-cta-get landing-cta-secondary" onClick={onSubscribe}>
-              Subscribe
+              Subscribe → Weekly or monthly peace
             </button>
             <button className="landing-cta" onClick={onStart}>
-              Send A gift
+              Send Surprises → Bridge the distance, Gifts for Loved ones in Lagos 
             </button>
-          <p className="landing-subtitle">
+          {/* <p className="landing-subtitle">
             Pick what you need. Pick A vendor. Done.<br />
             No sign-in. No browsing. Just certainty.
-          </p>
+          </p> */}
           </div>
         </div>
 

@@ -11,19 +11,19 @@ const HELP_OPTIONS: HelpOption[] = [
   {
     id: 'support1',
     name: 'Support Team - Sales',
-    whatsappNumber: '2348000000001',
+    whatsappNumber: '2347065813394',
     message: 'Hi, I need help with placing an order.',
   },
   {
     id: 'support2',
     name: 'Support Team - Issues',
-    whatsappNumber: '2348000000002',
+    whatsappNumber: '2347065813394',
     message: 'Hi, I have an issue with my order.',
   },
   {
     id: 'support3',
     name: 'Support Team - General',
-    whatsappNumber: '2348000000003',
+    whatsappNumber: '2347065813394',
     message: 'Hi, I have a general inquiry.',
   },
 ];
