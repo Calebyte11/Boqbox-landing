@@ -53,7 +53,6 @@ export default function LandingPage({ onStart, onGetMe, onSubscribe, onLogoClick
           <img src={require('../assets/images/previewDesktop.png')} alt="Gift preview" className="landing-preview-image desktop-preview" />
         </div>
       </div>
-      {createPortal(<WhatsAppChatHead />, document.body)}
     </div>
   );
 }
