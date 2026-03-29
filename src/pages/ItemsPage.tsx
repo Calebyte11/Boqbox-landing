@@ -5,6 +5,7 @@ import { GiftItem, OrderItem, SubscriptionOption } from '../types';
 import { formatNaira } from '../lib/data';
 import { useItems } from '../hooks/useItems';
 import { useSubscribableItems } from '../hooks/useSubscribableItems';
+import { useSearchItems } from '../hooks/useSearchItems';
 import useSEO from '../hooks/useSEO';
 import itemsImgOne from '../assets/images/itemsImgOne.jpeg';
 import itemsImgTwo from '../assets/images/itemsImgTwo.jpeg';
@@ -37,8 +38,11 @@ export default function ItemsPage({
   const [showDurationSelector, setShowDurationSelector] = useState(false);
   const [showDropOffSelector, setShowDropOffSelector] = useState(false);
   const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
   const regularItems = useItems();
   const subscribableItems = useSubscribableItems();
+  const { results: searchResults, loading: searchLoading, error: searchError, search: performSearch } = useSearchItems();
   const { items, loading, error: apiError, hasMore, loadMore } = isSubscribe ? subscribableItems : regularItems;
 
   // Set SEO metadata for items page
@@ -55,6 +59,19 @@ export default function ItemsPage({
       : 'Browse and select from our collection of quality gifts for discreet delivery.',
     keywords: 'select gifts, gift shopping, discreet delivery, gift subscriptions, wishlist, Lagos',
   });
+
+  // Handle search functionality
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+
+    if (!query.trim()) {
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    await performSearch(query);
+  };
 
   // Helper function to check if an item can be added to current flow
   const canAddItem = (item: GiftItem): boolean => {
@@ -136,6 +153,7 @@ export default function ItemsPage({
     if (filteredItems.length !== selectedItems.length) {
       onUpdateItems(filteredItems);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSubscribe, selectedItems]);
 
   const handleContinue = () => {
@@ -182,13 +200,32 @@ export default function ItemsPage({
 
         <h3 className="form-section-title">{isSubscribe ? 'Pick subscription item' : isGetMe ? 'Pick your item' : 'Pick a gift'}</h3>
 
+        {/* Search Input */}
+        <div style={{ marginBottom: 16 }}>
+          <input
+            type="text"
+            placeholder="Search items..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              fontSize: 14,
+              border: '1px solid #E5E7EB',
+              borderRadius: 8,
+              fontFamily: 'inherit',
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+
         {apiError && <p className="form-error" style={{ marginBottom: 16 }}>Error loading items: {apiError}</p>}
 
         {isSubscribe ? (
           // Subscription List View
           <>
             <div style={{ marginBottom: 20 }}>
-              {items.map((item, index) => (
+              {(isSearching ? searchResults : items).map((item, index) => (
                 <div
                   key={item._id || item.id}
                   style={{
@@ -337,9 +374,13 @@ export default function ItemsPage({
               ))}
             </div>
 
-            {loading && <p style={{ textAlign: 'center', color: '#6B7280', marginBottom: 16 }}>Loading items...</p>}
+            {searchLoading && isSearching && <p style={{ textAlign: 'center', color: '#6B7280', marginBottom: 16 }}>Searching items...</p>}
 
-            {hasMore && !loading && (
+            {!isSearching && loading && <p style={{ textAlign: 'center', color: '#6B7280', marginBottom: 16 }}>Loading items...</p>}
+
+            {searchError && isSearching && <p className="form-error" style={{ marginBottom: 16 }}>{searchError}</p>}
+
+            {!isSearching && hasMore && !loading && (
               <button
                 className="continue-btn"
                 onClick={loadMore}
@@ -598,7 +639,7 @@ export default function ItemsPage({
           // Regular Grid View
           <>
             <div className="items-grid">
-              {items.map((item, index) => (
+              {(isSearching ? searchResults : items).map((item, index) => (
                 <div
                   key={item._id || item.id}
                   className={`item-card ${currentItem?._id === item._id || currentItem?.id === item.id ? 'selected' : ''}`}
@@ -613,9 +654,13 @@ export default function ItemsPage({
               ))}
             </div>
 
-            {loading && <p style={{ textAlign: 'center', color: '#6B7280', marginBottom: 16 }}>Loading items...</p>}
+            {searchLoading && isSearching && <p style={{ textAlign: 'center', color: '#6B7280', marginBottom: 16 }}>Searching items...</p>}
 
-            {hasMore && !loading && (
+            {!isSearching && loading && <p style={{ textAlign: 'center', color: '#6B7280', marginBottom: 16 }}>Loading items...</p>}
+
+            {searchError && isSearching && <p className="form-error" style={{ marginBottom: 16 }}>{searchError}</p>}
+
+            {!isSearching && hasMore && !loading && (
               <button
                 className="continue-btn"
                 onClick={loadMore}
