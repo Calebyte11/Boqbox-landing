@@ -202,7 +202,7 @@ body {
 }
 
 .landing-title .orange {
-  color: #FF6B6B;
+  color: var(--black);
   display: block;
   font-size: 40px;
 }
@@ -261,9 +261,9 @@ body {
 }
 
 .landing-title .orange {
-  color: #f97316;
+  color: var(--black);
   display: block;
-  font-size: 30px;
+  font-size: 22px;
   margin-bottom: 12px;
   text-align: center;
   margin-top: 15px;
@@ -272,9 +272,10 @@ body {
 .landing-title .black {
   color: var(--black);
     display: block;
-    font-size: 30px;
+    font-size: 20px;
     margin-bottom: 12px;
     text-align: center;
+    font-weight: 400;
 }
 
 .landing-subtitle {
