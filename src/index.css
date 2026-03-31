@@ -397,11 +397,14 @@ body {
   flex-direction: column;
   padding: 0 24px 32px;
   overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  min-width: 0;
 }
 
 .form-page-header {
   padding-top: 12px;
-  margin-bottom: 28px;
+  /* margin-bottom: 28px; */
 }
 
 .form-page-title {
@@ -584,6 +587,8 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 14px;
   margin-bottom: 24px;
+  width: 100%;
+  min-width: 0;
 }
 
 .item-card {
@@ -593,6 +598,9 @@ body {
   cursor: pointer;
   transition: all 0.2s;
   background: var(--white);
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .item-card:hover {

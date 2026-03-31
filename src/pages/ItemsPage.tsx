@@ -70,7 +70,8 @@ export default function ItemsPage({
     }
 
     setIsSearching(true);
-    await performSearch(query);
+    const searchType = isSubscribe ? 'subscription' : 'regular';
+    await performSearch(query, searchType);
   };
 
   // Helper function to check if an item can be added to current flow
@@ -224,7 +225,7 @@ export default function ItemsPage({
         {isSubscribe ? (
           // Subscription List View
           <>
-            <div style={{ marginBottom: 20 }}>
+            <div style={{ marginBottom: 20, width: '100%' }}>
               {(isSearching ? searchResults : items).map((item, index) => (
                 <div
                   key={item._id || item.id}
@@ -237,6 +238,8 @@ export default function ItemsPage({
                     borderRadius: 12,
                     backgroundColor: '#FFFFFF',
                     alignItems: 'flex-start',
+                    width: '100%',
+                    boxSizing: 'border-box',
                   }}
                 >
                   {/* Image */}
