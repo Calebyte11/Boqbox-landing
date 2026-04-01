@@ -62,7 +62,8 @@ export default function App() {
   const updateItems = (items: OrderItem[]) => setOrder((o) => ({ ...o, items }));
   const addItem = (item: GiftItem, quantity: number, subscriptionOption?: SubscriptionOption, dropOffDay?: string) => {
     setOrder((o) => {
-      const existingIndex = o.items.findIndex((oi) => oi.item.id === item.id);
+      const itemId = item._id || item.id;
+      const existingIndex = o.items.findIndex((oi) => (oi.item._id || oi.item.id) === itemId);
       if (existingIndex >= 0) {
         const newItems = [...o.items];
         newItems[existingIndex].quantity += quantity;

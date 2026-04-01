@@ -40,6 +40,7 @@ export default function ItemsPage({
   const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const regularItems = useItems();
   const subscribableItems = useSubscribableItems();
   const { results: searchResults, loading: searchLoading, error: searchError, search: performSearch } = useSearchItems();
@@ -63,12 +64,24 @@ export default function ItemsPage({
   // Handle search functionality
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
+    setError('');
 
     if (!query.trim()) {
       setIsSearching(false);
+      setCurrentItem(null);
+      setSelectedOption(null);
+      setSelectedDropOffDay(null);
+      setShowDurationSelector(false);
+      setShowDropOffSelector(false);
       return;
     }
 
+    // Clear all selection states when searching
+    setCurrentItem(null);
+    setSelectedOption(null);
+    setSelectedDropOffDay(null);
+    setShowDurationSelector(false);
+    setShowDropOffSelector(false);
     setIsSearching(true);
     const searchType = isSubscribe ? 'subscription' : 'regular';
     await performSearch(query, searchType);
@@ -115,14 +128,27 @@ export default function ItemsPage({
         return;
       }
     }
+    
+    // Ensure the item has a valid ID
+    const itemId = currentItem._id || currentItem.id;
+    if (!itemId) {
+      setError('Item is missing an ID. Please try again.');
+      return;
+    }
+    
     setError('');
     onAddItem(currentItem, currentQuantity, isSubscribe ? selectedOption || undefined : undefined, isSubscribe ? selectedDropOffDay || undefined : undefined);
+    
+    // Reset state to allow adding more items
     setCurrentItem(null);
     setCurrentQuantity(1);
     setSelectedOption(null);
     setSelectedDropOffDay(null);
     setShowDurationSelector(false);
     setShowDropOffSelector(false);
+    // Don't clear search - allow user to continue searching and adding items
+    // setSearchQuery('');
+    // setIsSearching(false);
   };
 
   const handleRemoveItem = (itemId: string) => {
@@ -178,9 +204,10 @@ export default function ItemsPage({
     if (item?.image_url && item.image_url.trim() !== '') {
       return item.image_url;
     }
-    // Fall back to static images
+    // Fall back to static images - ensure index is always valid and positive
     const images = [itemsImgOne, itemsImgTwo, itemsImgThree];
-    return images[index % 3];
+    const safeIndex = Math.max(0, index) % 3;
+    return images[safeIndex];
   };
 
   return (
@@ -584,6 +611,10 @@ export default function ItemsPage({
                       <button
                         onClick={() => {
                           setShowDropOffSelector(false);
+                          setCurrentItem(null);
+                          setSelectedOption(null);
+                          setSelectedDropOffDay(null);
+                          setShowDurationSelector(false);
                         }}
                         style={{
                           flex: 1,
@@ -646,10 +677,24 @@ export default function ItemsPage({
                 <div
                   key={item._id || item.id}
                   className={`item-card ${currentItem?._id === item._id || currentItem?.id === item.id ? 'selected' : ''}`}
-                  onClick={() => { setCurrentItem(item); setError(''); }}
+                  onClick={() => { 
+                    setCurrentItem({...item}); 
+                    setError(''); 
+                    setCurrentQuantity(1);
+                  }}
                 >
                   <span className="item-cat-badge">{item.category}</span>
-                  <img src={getItemImage(item, index)} alt={item.name} className="item-emoji" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8 }} />
+                  <img 
+                    src={getItemImage(item, index)} 
+                    alt={item.name} 
+                    className="item-emoji" 
+                    style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8 }}
+                    onError={(e) => {
+                      const images = [itemsImgOne, itemsImgTwo, itemsImgThree];
+                      const fallbackIndex = Math.max(0, index) % 3;
+                      (e.target as HTMLImageElement).src = images[fallbackIndex];
+                    }}
+                  />
                   <div className="item-name">{item.name}</div>
                   <div className="item-desc">{item.description}</div>
                   <div className="item-price">{formatNaira(item.price || 0)}</div>
@@ -715,25 +760,37 @@ export default function ItemsPage({
               {selectedItems.map((oi) => {
                 const itemId = oi.item._id || oi.item.id || '';
                 const itemIndex = items.findIndex((item) => (item._id || item.id) === itemId);
+                const safeIndex = itemIndex >= 0 ? itemIndex : 0;
                 return (
                   <div
                     key={itemId}
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      alignItems: 'center',
+                      alignItems: 'flex-start',
+                      gap: 12,
                       padding: '12px 16px',
                       background: '#F5F5F5',
                       borderRadius: 8,
                       marginBottom: 8,
+                      flexWrap: 'wrap',
                     }}
                   >
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 500, color: '#1F2937', display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-                        <img src={getItemImage(oi.item, itemIndex)} alt={oi.item.name} style={{ width: 24, height: 24, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
-                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <div style={{ flex: 1, minWidth: 200, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                      <img 
+                        src={getItemImage(oi.item, safeIndex)} 
+                        alt={oi.item.name} 
+                        style={{ width: 24, height: 24, objectFit: 'cover', borderRadius: 4, flexShrink: 0, marginTop: 2 }}
+                        onError={(e) => {
+                          const images = [itemsImgOne, itemsImgTwo, itemsImgThree];
+                          const fallbackIndex = Math.max(0, safeIndex) % 3;
+                          (e.target as HTMLImageElement).src = images[fallbackIndex];
+                        }}
+                      />
+                      <div style={{ minWidth: 0, flex: 1 }}>
+                        <div style={{ fontSize: 14, fontWeight: 500, color: '#1F2937', wordBreak: 'break-word', lineHeight: 1.3 }}>
                           {oi.item.name}
-                        </span>
+                        </div>
                       </div>
                       {oi.subscriptionOption ? (
                         <div style={{ fontSize: 13, color: '#6B7280', marginTop: 4 }}>
@@ -747,9 +804,9 @@ export default function ItemsPage({
                         </div>
                       )}
                     </div>
-                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', width: '100%', minWidth: 0, justifyContent: 'flex-end', order: 3 }}>
                       {!oi.subscriptionOption && (
-                        <div className="quantity-controls" style={{ gap: 8 }}>
+                        <div className="quantity-controls" style={{ gap: 8, display: 'flex' }}>
                           <button
                             className="qty-btn"
                             onClick={() => handleUpdateQuantity(itemId, oi.quantity - 1)}
