@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useCallback, useEffect } from 'react';
 import { GiftItem } from '../types';
 
@@ -17,10 +18,10 @@ interface UseItemsReturn {
 }
 
 // =========== FOR DEVELOPMENT =============
-// const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://boqbox-mini.onrender.com/api/v1';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://boqbox-mini.onrender.com/api/v1';
 
 // =============== FOR PRODUCTION =================
-const API_BASE_URL = 'https://boqbox.ng/api/v1';
+// const API_BASE_URL = 'https://boqbox.ng/api/v1';
 
 const LIMIT = 4;
 

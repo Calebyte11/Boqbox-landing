@@ -182,14 +182,14 @@ export default function PaymentPage({
       const payload = constructOrderPayload();
 
       //====== FOR DEVELOPMENT======= Select the appropriate API endpoint
-      // const apiEndpoint = isSubscriptionFlow
-      //   ? "https://boqbox-mini.onrender.com/api/v1/subscriptions/create"
-      //   : API_ENDPOINTS.ORDER_CREATE;
+      const apiEndpoint = isSubscriptionFlow
+        ? "https://boqbox-mini.onrender.com/api/v1/subscriptions/create"
+        : API_ENDPOINTS.ORDER_CREATE;
 
         //====== FOR PRODUCTION ======= Select the appropriate API endpoint
-      const apiEndpoint = isSubscriptionFlow
-        ? "https://boqbox.ng/api/v1/subscriptions/create"
-        : API_ENDPOINTS.ORDER_CREATE;
+      // const apiEndpoint = isSubscriptionFlow
+      //   ? "https://boqbox.ng/api/v1/subscriptions/create"
+      //   : API_ENDPOINTS.ORDER_CREATE;
  
       // Start the request
       const response = await fetch(apiEndpoint, {
