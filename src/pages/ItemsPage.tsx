@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import Nav from '../components/Nav';
 import StepIndicator from '../components/StepIndicator';
